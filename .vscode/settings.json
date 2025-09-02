@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.fsh": "glsl",
+        "*.vsh": "glsl",
+        "*.csh": "c",
+        "*.qc": "c",
+        "*.qh": "c",
+        "stdlib.h": "c",
+        "stdbool.h": "c",
+        "stdio.h": "c"
+    }
+}
