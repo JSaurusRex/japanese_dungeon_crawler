@@ -20,6 +20,8 @@
         "main.h": "c",
         "shield1.h": "c",
         "shield_repair_item.h": "c",
-        "item_enhancer.h": "c"
+        "item_enhancer.h": "c",
+        "enemy1.h": "c",
+        "shadows.h": "c"
     }
 }

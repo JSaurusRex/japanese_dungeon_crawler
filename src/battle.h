@@ -10,6 +10,8 @@ void try_return_item();
 void next_turn();
 void consume_energy(int energy);
 Vector2 CalculateEnemyPosition(int lane, int position);
+void draw_inventory();
+void draw_items_UI();
 
 #define MAX_ENEMIES 8
 #define MAX_ITEMS 14
@@ -71,6 +73,12 @@ struct sShield
 };
 
 extern float _health;
+extern char * _description;
+extern sItem _item_hand;
+extern sShield _shield_hand;
+
 void take_damage(int lane, Element element, float damage);
+void draw_item(Vector2 pos, sItem * pItem);
+void Battle_Start();
 
 #endif

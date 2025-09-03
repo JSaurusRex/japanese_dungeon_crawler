@@ -8,11 +8,12 @@
 #include "questions.h"
 #include "battle.h"
 #include "sprite_manager.h"
+#include "next_level_screen.h"
 
 bool _printDebug = true;
 Font _fontJapanese;
 
-void (*_screen)() = &Battle_Frame;
+void (*_screen)() = &next_level_frame;
 
 void EmptyScreen();
 
