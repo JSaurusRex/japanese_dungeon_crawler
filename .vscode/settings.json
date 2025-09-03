@@ -15,6 +15,7 @@
         "sstream": "c",
         "regex": "c",
         "strstream": "c",
-        "*.inc": "c"
+        "*.inc": "c",
+        "item1.h": "c"
     }
 }

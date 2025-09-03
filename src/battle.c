@@ -12,13 +12,15 @@
 
 #include "enemies/enemy1.h"
 #include "items/item1.h"
-
-#define MAX_ENEMIES 8
-#define MAX_ITEMS 50
+#include "shields/shield1.h"
 
 sEnemy _enemies [MAX_ENEMIES] = {0};
 sItem _inventory [MAX_ITEMS] = {0};
-sItem _hand = {0};
+sItem _item_hand = {0};
+
+sShield _shield_lanes [MAX_LANES] = {0};
+sShield _shield_inventory [MAX_SHIELDS] = {0};
+sShield _shield_hand = {0};
 
 Texture2D _battle_screen_texture;
 
@@ -36,7 +38,7 @@ char * _description;
 
 Vector2 CalculateEnemyPosition(int lane, int position)
 {
-    return (Vector2){500 + position * 90, 200 + lane * 40};
+    return (Vector2){500 + position * 80 + lane * 10, 240 + lane * 50};
 }
 
 void consume_energy(int energy)
@@ -72,7 +74,31 @@ void do_next_turn()
 
 void take_damage(int lane, Element element, float damage)
 {
-    _health -= damage;
+    if (lane < 0 || lane >= MAX_LANES)
+    {
+        printf("error: take_damage: lane is non existant %i\n", lane);
+        return;
+    }
+
+    if (_shield_lanes[lane].active)
+    {
+        _shield_lanes[lane].take_damage(&_shield_lanes[lane], 0, element, damage);
+
+        if (_shield_lanes[lane].health <= 0)
+        {
+            //put shield back in inventory
+            for(int i = 0; i < MAX_SHIELDS; i++)
+            {
+                if (_shield_inventory[i].active)
+                    continue;
+                
+                _shield_inventory[i] = _shield_lanes[lane];
+                _shield_lanes[lane].active = false;
+            }
+        }
+    }
+    else
+        _health -= damage;
 }
 
 void Battle_Init()
@@ -81,6 +107,7 @@ void Battle_Init()
 
     _enemies[0] = _prefab_enemy1;
     _inventory[0] = _prefab_item1;
+    _shield_inventory[0] = _prefab_shield1;
 
     _energy = 50;
     _turn = -1;
@@ -88,17 +115,30 @@ void Battle_Init()
 
 void try_return_item()
 {
-    if (!_hand.active)
-        return;
-    
-    for(int item = 0; item < MAX_ITEMS; item++)
+    if (_item_hand.active)
     {
-        if (_inventory[item].active)
-            continue;
-        
-        //copy
-        _inventory[item] = _hand;
-        _hand.active = false;
+        for(int item = 0; item < MAX_ITEMS; item++)
+        {
+            if (_inventory[item].active)
+                continue;
+            
+            //copy
+            _inventory[item] = _item_hand;
+            _item_hand.active = false;
+        }
+    }
+
+    if (_shield_hand.active)
+    {
+        for(int shield = 0; shield < MAX_SHIELDS; shield++)
+        {
+            if (_shield_inventory[shield].active)
+                continue;
+            
+            //copy
+            _shield_inventory[shield] = _shield_hand;
+            _shield_hand.active = false;
+        }
     }
 }
 
@@ -142,9 +182,9 @@ void Battle_Frame()
                     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1)
                     {
                         printf("clicked enemy!\n");
-                        if (_hand.active && _hand.effect_enemy)
+                        if (_item_hand.active && _item_hand.effect_enemy)
                         {
-                            (*_hand.effect_enemy)(&_hand, &_enemies[enemy]);
+                            (*_item_hand.effect_enemy)(&_item_hand, &_enemies[enemy]);
                         }
                     }
                 }
@@ -185,13 +225,104 @@ void Battle_Frame()
                 {
                     _description = _inventory[item].description;
 
-                    if (!_hand.active && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1 && _inventory[item].energy < _energy)
+                    if (!_item_hand.active && !_shield_hand.active && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
+                        _turn == -1 && _inventory[item].energy < _energy)
                     {
                         printf("clicked item!\n");
                         //pick up item
-                        _hand = _inventory[item];
+                        _item_hand = _inventory[item];
                         _inventory[item].active = false;
-                        _hand.active = true;
+                        _item_hand.active = true;
+                    }
+                }
+            }
+        }
+    }
+
+    //draw shields
+    int shield_counter = 0;
+    for(int shield = 0; shield < MAX_SHIELDS; shield++)
+    {
+        if (!_shield_inventory[shield].active)
+            continue;
+                
+        Vector2 pos = (Vector2){10, 10 + shield_counter * 50};
+        shield_counter++;
+
+
+        if (_shield_inventory[shield].render)
+            _shield_inventory[shield].render(&_shield_inventory[shield], pos);
+        
+        //draw health numbers
+        {
+            char str[STRING_LENGTH];
+            snprintf(str, STRING_LENGTH, "%.0f", _shield_inventory[shield].health);
+            DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
+        }
+        
+        //shield input / mouse behaviour
+        {
+            if (pos.x < GetMouseX() && GetMouseX() < pos.x + 50)
+            {
+                if (pos.y < GetMouseY() && GetMouseY() < pos.y + 50)
+                {
+                    _description = _shield_inventory[shield].description;
+
+                    if (!_item_hand.active && !_shield_hand.active && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1 &&
+                        _shield_inventory[shield].health > 0)
+                    {
+                        printf("clicked shield!\n");
+                        //pick up shield
+                        _shield_hand = _shield_inventory[shield];
+                        _shield_inventory[shield].active = false;
+                        _shield_hand.active = true;
+                    }
+                }
+            }
+        }
+    }
+
+    //draw lane shield spots
+    for(int lane = 0; lane < MAX_LANES; lane++)
+    {
+        Vector2 pos = CalculateEnemyPosition(lane, -2);
+
+        pos.y += 20;
+
+        if(_shield_lanes[lane].active)
+        {
+            _shield_lanes[lane].render(&_shield_lanes[lane], (Vector2){pos.x - 20, pos.y - 20});
+
+            //draw health numbers
+            {
+                char str[STRING_LENGTH];
+                snprintf(str, STRING_LENGTH, "%.0f", _shield_lanes[lane].health);
+                DrawTextEx(_fontJapanese, str, (Vector2){ pos.x - 50, pos.y }, 20, 2, WHITE);
+            }
+            
+        }
+        else
+            DrawCircle(pos.x, pos.y, 15, YELLOW);
+
+        {
+            if (pos.x - 15 < GetMouseX() && pos.x + 15 > GetMouseX())
+            {
+                if (pos.y - 15 < GetMouseY() && pos.y + 15 > GetMouseY())
+                {
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _shield_hand.active && !_shield_lanes[lane].active)
+                    {
+                        _shield_lanes[lane] = _shield_hand;
+                        _shield_hand.active = false;
+                    }
+                    else if (_shield_lanes[lane].active)
+                    {
+                        _description = _shield_lanes[lane].description;
+
+                        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !_shield_hand.active && !_item_hand.active)
+                        {
+                            _shield_hand = _shield_lanes[lane];
+                            _shield_lanes[lane].active = false;
+                        }
                     }
                 }
             }
@@ -231,13 +362,19 @@ void Battle_Frame()
     }
 
     //draw dragged items
-    if (_hand.active && _hand.render)
+    if (_item_hand.active && _item_hand.render)
     {
-        _hand.render(&_hand, GetMousePosition());
+        _item_hand.render(&_item_hand, GetMousePosition());
+    }
+
+    //draw dragged shield
+    if (_shield_hand.active && _shield_hand.render)
+    {
+        _shield_hand.render(&_shield_hand, GetMousePosition());
     }
 
     //drop item with right mouse click
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && _hand.active)
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && (_item_hand.active || _shield_hand.active))
     {
         try_return_item();
     }
