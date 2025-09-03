@@ -7,6 +7,7 @@
 #include "main.h"
 #include "questions.h"
 #include "battle.h"
+#include "sprite_manager.h"
 
 bool _printDebug = true;
 Font _fontJapanese;
@@ -37,6 +38,9 @@ void main() {
 
     Questions_init();
     Battle_Init();
+    sprite_manager_init();
+
+    srand(GetTime());
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {

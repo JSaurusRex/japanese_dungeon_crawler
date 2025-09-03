@@ -12,7 +12,7 @@ void consume_energy(int energy);
 Vector2 CalculateEnemyPosition(int lane, int position);
 
 #define MAX_ENEMIES 8
-#define MAX_ITEMS 50
+#define MAX_ITEMS 14
 #define MAX_LANES 3
 #define MAX_SHIELDS 5
 
@@ -28,6 +28,9 @@ struct sEnemy
     float health;
     int lane;
 
+    float shake_timer;
+    float attack_animation_timer;
+
     void (*render)(sEnemy *, int);
     void (*turn)(sEnemy *);
     void (*takeDamage)(sEnemy *, float, Element);
@@ -36,23 +39,31 @@ struct sEnemy
 };
 
 typedef struct sItem sItem;
+typedef struct sShield sShield;
 
 struct sItem
 {
     bool active;
     int energy;
+    float shake_timer;
     void (*render)(sItem *, Vector2);
     void (*effect_enemy)(sItem *, sEnemy*);
+    void (*effect_shield)(sItem*, sShield*);
+    void (*effect_item)(sItem*, sItem*);
+    float enhanced;
+    int rounds_disabled;
+    int level;
 
     char * description;
 };
 
-typedef struct sShield sShield;
 
 struct sShield
 {
     bool active;
     float health;
+    int max_health;
+    float shake_timer;
     void (*render)(sShield *, Vector2);
     void (*take_damage)(sShield *, sEnemy*, Element, float);
 

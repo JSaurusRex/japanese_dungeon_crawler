@@ -18,6 +18,8 @@ sItem _prefab_item1 = {
     .active = true,
     .energy = 35,
     .effect_enemy = &Item_effect_enemy,
+    .effect_shield = 0,
+    .effect_item = 0,
     .render = &ItemRender,
     .description = item1_description
 };
@@ -33,9 +35,8 @@ sItem * _pItem = 0;
 void Item_effect_enemy_finish()
 {
     if (_answers_incorrect < _quiz_hearts)
-        (*_pEnemy->takeDamage)(_pEnemy, 5, ELEMENT_NONE);
+        (*_pEnemy->takeDamage)(_pEnemy, 5 * (_answers_incorrect == 0 ? _pItem->enhanced : 1), ELEMENT_NONE);
     _screen = &Battle_Frame;
-    consume_energy(_prefab_item1.energy);
     try_return_item();
 }
 
@@ -55,6 +56,10 @@ void Item_effect_enemy(sItem * self, sEnemy * pEnemy)
     }
 
     _pEnemy = pEnemy;
-    Start_Questions(5, 3, "hiragana", &Item_effect_enemy_finish);
+    _pItem = self;
+    self->rounds_disabled = 2;
+    consume_energy(self->energy);
+
+    Start_Questions(5, 3, "hiragana", 1, &Item_effect_enemy_finish);
 }
 

@@ -9,9 +9,13 @@
 #include "main.h"
 #include "questions.h"
 #include "battle.h"
+#include "particles.h"
+#include "shadows.h"
 
 #include "enemies/enemy1.h"
 #include "items/item1.h"
+#include "items/shield_repair_item.h"
+#include "items/item_enhancer.h"
 #include "shields/shield1.h"
 
 sEnemy _enemies [MAX_ENEMIES] = {0};
@@ -46,7 +50,10 @@ void consume_energy(int energy)
     _energy -= energy;
     if (_energy <= 0)
     {
-        _energy = _max_energy;
+        _energy += 25;
+
+        if (_energy > _max_energy)
+            _energy = _max_energy;
         _turn = -1; //set turn to first enemies
         next_turn();
     }
@@ -54,6 +61,13 @@ void consume_energy(int energy)
 
 void next_turn()
 {
+    //de-enhance items
+    for(int i = 0; i < MAX_ITEMS; i++)
+    {
+        _inventory[i].enhanced = 1;
+        _inventory[i].rounds_disabled--;
+    }
+
     _turn_breather = 1;
     _turn++;
 }
@@ -107,6 +121,8 @@ void Battle_Init()
 
     _enemies[0] = _prefab_enemy1;
     _inventory[0] = _prefab_item1;
+    _inventory[1] = _prefab_shield_repair_item;
+    _inventory[2] = _prefab_item_enhancer;
     _shield_inventory[0] = _prefab_shield1;
 
     _energy = 50;
@@ -153,6 +169,7 @@ void Battle_Frame()
     }
 
     DrawTexture(_battle_screen_texture, 0, 0, WHITE);
+    render_shadows();
 
     //draw enemies
     for(int enemy = 0; enemy < MAX_ENEMIES; enemy++)
@@ -168,7 +185,7 @@ void Battle_Frame()
         //draw health numbers
         {
             char str[STRING_LENGTH];
-            snprintf(str, STRING_LENGTH, "%.0f", _enemies[enemy].health);
+            snprintf(str, STRING_LENGTH, "hp: %.0f", _enemies[enemy].health);
             DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
         }
 
@@ -194,27 +211,59 @@ void Battle_Frame()
     }
 
     //draw items
+    for(int item = 0; item < MAX_ITEMS; item++)
+    {   
+        int x = item % 7;
+        int y = floor(item / 7.0);
+
+        Vector2 pos = (Vector2){30 + x * 80, 430 + y * 100};
+
+        DrawRectangle(pos.x - 10, pos.y - 10, 75, 75, ColorAlpha(BLACK, 0.2));
+    }
+
     int item_counter = 0;
     for(int item = 0; item < MAX_ITEMS; item++)
     {
         if (!_inventory[item].active)
             continue;
         
-        int x = item_counter % 5;
-        int y = floor(item_counter / 5.0);
+        int x = item_counter % 7;
+        int y = floor(item_counter / 7.0);
         
         item_counter++;
 
-        Vector2 pos = (Vector2){50 + x * 100, 430 + y * 100};
+        Vector2 pos = (Vector2){30 + x * 80, 430 + y * 100};
+
+        if (_inventory[item].enhanced > 1)
+            DrawCircle(pos.x+25, pos.y+25, 30, GOLD);
 
         if (_inventory[item].render)
             _inventory[item].render(&_inventory[item], pos);
         
+        if (_inventory[item].rounds_disabled > 0 || _inventory[item].energy > _energy)
+        {
+            DrawCircle(pos.x+25, pos.y+25, 35, ColorAlpha(BLACK, 0.4));
+
+            if (_inventory[item].rounds_disabled > 0)
+            {
+                char str[STRING_LENGTH];
+                snprintf(str, STRING_LENGTH, "%i", _inventory[item].rounds_disabled);
+                DrawTextEx(_fontJapanese, str, (Vector2){ pos.x - 10, pos.y - 10 }, 20, 2, WHITE);
+            }
+        }
+        
+        //draw level numbers
+        {
+            char str[STRING_LENGTH];
+            snprintf(str, STRING_LENGTH, "lvl: %i", _inventory[item].level);
+            DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40 }, 20, 2, WHITE);
+        }
+
         //draw energy numbers
         {
             char str[STRING_LENGTH];
-            snprintf(str, STRING_LENGTH, "%i", _inventory[item].energy);
-            DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
+            snprintf(str, STRING_LENGTH, "e: %i", _inventory[item].energy);
+            DrawTextEx(_fontJapanese, str, (Vector2){ pos.x + 10, pos.y + 50 }, 20, 2, WHITE);
         }
         
         //item input / mouse behaviour
@@ -225,14 +274,20 @@ void Battle_Frame()
                 {
                     _description = _inventory[item].description;
 
-                    if (!_item_hand.active && !_shield_hand.active && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
-                        _turn == -1 && _inventory[item].energy < _energy)
+                    bool interactable = _inventory[item].rounds_disabled <= 0 && _turn == -1 && IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+
+                    if (!_item_hand.active && !_shield_hand.active && interactable && _inventory[item].energy <= _energy)
                     {
                         printf("clicked item!\n");
                         //pick up item
                         _item_hand = _inventory[item];
                         _inventory[item].active = false;
                         _item_hand.active = true;
+                    }
+
+                    if (_item_hand.active && interactable && _item_hand.effect_item)
+                    {
+                        _item_hand.effect_item(&_item_hand, &_inventory[item]);
                     }
                 }
             }
@@ -256,7 +311,7 @@ void Battle_Frame()
         //draw health numbers
         {
             char str[STRING_LENGTH];
-            snprintf(str, STRING_LENGTH, "%.0f", _shield_inventory[shield].health);
+            snprintf(str, STRING_LENGTH, "hp: %.0f", _shield_inventory[shield].health);
             DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
         }
         
@@ -277,6 +332,13 @@ void Battle_Frame()
                         _shield_inventory[shield].active = false;
                         _shield_hand.active = true;
                     }
+
+                    if (_item_hand.active && _item_hand.effect_shield && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1)
+                    {
+                        printf("clicked shield!\n");
+                        //apply item on shield
+                        _item_hand.effect_shield(&_item_hand, &_shield_inventory[shield]);
+                    }
                 }
             }
         }
@@ -291,12 +353,13 @@ void Battle_Frame()
 
         if(_shield_lanes[lane].active)
         {
-            _shield_lanes[lane].render(&_shield_lanes[lane], (Vector2){pos.x - 20, pos.y - 20});
+            add_shadow((Vector2){pos.x, pos.y + 20}, 0.7);
+            _shield_lanes[lane].render(&_shield_lanes[lane], (Vector2){pos.x - 25, pos.y - 25});
 
             //draw health numbers
             {
                 char str[STRING_LENGTH];
-                snprintf(str, STRING_LENGTH, "%.0f", _shield_lanes[lane].health);
+                snprintf(str, STRING_LENGTH, "hp:%.0f", _shield_lanes[lane].health);
                 DrawTextEx(_fontJapanese, str, (Vector2){ pos.x - 50, pos.y }, 20, 2, WHITE);
             }
             
@@ -309,7 +372,7 @@ void Battle_Frame()
             {
                 if (pos.y - 15 < GetMouseY() && pos.y + 15 > GetMouseY())
                 {
-                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _shield_hand.active && !_shield_lanes[lane].active)
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _shield_hand.active && !_shield_lanes[lane].active && _turn == -1)
                     {
                         _shield_lanes[lane] = _shield_hand;
                         _shield_hand.active = false;
@@ -318,10 +381,15 @@ void Battle_Frame()
                     {
                         _description = _shield_lanes[lane].description;
 
-                        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !_shield_hand.active && !_item_hand.active)
+                        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !_shield_hand.active && !_item_hand.active && _turn == -1)
                         {
                             _shield_hand = _shield_lanes[lane];
                             _shield_lanes[lane].active = false;
+                        }
+
+                        if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _item_hand.active && _item_hand.effect_shield && _turn == -1)
+                        {
+                            _item_hand.effect_shield(&_item_hand, &_shield_lanes[lane]);
                         }
                     }
                 }
@@ -378,4 +446,6 @@ void Battle_Frame()
     {
         try_return_item();
     }
+
+    draw_particles();
 }

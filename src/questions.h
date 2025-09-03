@@ -13,12 +13,12 @@ extern int _quiz_hearts;
 extern int _answers_incorrect;
 
 bool Questions_init();
-void Start_Questions(int amount, int hearts, char * pack, void (*callback)());
+void Start_Questions(int amount, int hearts, char * pack, int level, void (*callback)());
 
 void QuestionsFrame();
 
 
-bool LoadRandomQuestion(char * pack, sQuestion * question);
+bool LoadRandomQuestion(char * pack, sQuestion * question, int level);
 bool LoadAllQuestions();
 bool ProcessQuestionsFile(char * file, sQuestion * question);
 

@@ -16,6 +16,10 @@
         "regex": "c",
         "strstream": "c",
         "*.inc": "c",
-        "item1.h": "c"
+        "item1.h": "c",
+        "main.h": "c",
+        "shield1.h": "c",
+        "shield_repair_item.h": "c",
+        "item_enhancer.h": "c"
     }
 }

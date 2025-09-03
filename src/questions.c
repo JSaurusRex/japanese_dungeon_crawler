@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include <raymath.h>
 #include <math.h>
 
 #include "main.h"
@@ -22,7 +23,8 @@ int _answer_counter = 0;
 int _answers_amount = 5;
 int _quiz_hearts = 3;
 int _answers_incorrect = 3;
-char _pack [STRING_LENGTH];
+char _pack [STRING_LENGTH] = {0};
+int _level = 1;
 
 void (*_callback)() = 0;
 
@@ -40,7 +42,7 @@ bool Questions_init()
     return true;
 }
 
-void Start_Questions(int amount, int hearts, char * pack, void (*callback)())
+void Start_Questions(int amount, int hearts, char * pack, int level, void (*callback)())
 {
     if (!pack)
     {
@@ -67,7 +69,10 @@ void Start_Questions(int amount, int hearts, char * pack, void (*callback)())
 
     _callback = callback;
 
-    LoadRandomQuestion(pack, &_question);
+    strncpy(_pack, pack, STRING_LENGTH);
+    _level = level;
+
+    LoadRandomQuestion(pack, &_question, level);
     
     while(_input_str_cursor >= 0)
     {
@@ -135,7 +140,7 @@ void QuestionsFrame()
                 }
             }
 
-            LoadRandomQuestion("hiragana", &_question);
+            LoadRandomQuestion(_pack, &_question, _level);
             while(_input_str_cursor >= 0)
             {
                 _input_str[_input_str_cursor] = 0;
@@ -173,11 +178,11 @@ void QuestionsFrame()
 
         //render all answers
         int shown = 0;
-        for(int i = 0; i < _questions_count && shown < 5; i++)
+        for(int i = 0; i < _questions_count && shown < 11; i++)
         {
             if(_input_str_cursor == -1 || strstr(_all_questions[i].english, _input_str))
             {
-                DrawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 400, 300 + shown * 50 }, 35, 2, BLACK);
+                DrawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 400, 250 + shown * 40 }, 35, 2, BLACK);
                 shown++;
             }
         }
@@ -208,7 +213,7 @@ bool LoadAllQuestions()
     if (_all_questions)
         printf("error: LoadAllQuestions: Answers already allocated\n");
     
-    _all_questions = calloc(sizeof(char), STRING_LENGTH * files.count * sizeof(char));
+    _all_questions = calloc(sizeof(sQuestion), files.count);
 
     if (!_all_questions)
     {
@@ -225,10 +230,13 @@ bool LoadAllQuestions()
         index++;
     }
 
+    printf("index %i\n", index);
+
     _questions_count = index;
+    return true;
 }
 
-bool LoadRandomQuestion(char * pack, sQuestion * question)
+bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
 {
     if (!pack)
     {
@@ -244,6 +252,21 @@ bool LoadRandomQuestion(char * pack, sQuestion * question)
         printf("error: LoadRandomQuestion: Directory does not exist %s\n", path);
         return false;
     }
+
+    char file[STRING_LENGTH];
+    snprintf(file, STRING_LENGTH, "data/words/%s/levels.txt", pack);
+    char * text = LoadFileText(file);
+    if (!text)
+    {
+        printf("error: LoadRandomQuestion: LoadFileText failed to load file %s\n", file);
+        return false;
+    }
+    int levels = atoi(text);
+
+    level = rand() % (int)fmax(fmin(levels, level)+1, 1);
+    printf("random level %i, max %i, levels.txt: %s\n", level, levels, text);
+
+    snprintf(path, STRING_LENGTH, "data/words/%s/%i", pack, level);
 
     FilePathList files = LoadDirectoryFilesEx(path, ".question", false);
 
