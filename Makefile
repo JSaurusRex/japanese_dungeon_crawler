@@ -1,2 +1,2 @@
 main:
-	gcc -o JapaneseLearningGame src/*.c -lraylib -lm
+	gcc -o JapaneseLearningGame src/*.c src/enemies/*.c src/items/*.c -lraylib -lm

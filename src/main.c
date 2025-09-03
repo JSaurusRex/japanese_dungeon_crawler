@@ -16,6 +16,7 @@ void (*_screen)() = &Battle_Frame;
 void EmptyScreen();
 
 void main() {
+    SetWindowState(FLAG_MSAA_4X_HINT);
     InitWindow(800, 600, "Japanese text test");
 
     int total = (0x9FFF - 0x3040) + LATIN_UNICODE;
@@ -39,6 +40,11 @@ void main() {
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
+
+        if (IsKeyPressed(KEY_F1))
+        {
+            printf("%i, %i\n", GetMouseX(), GetMouseY());
+        }
 
         if (IsKeyPressed(KEY_F10))
         {

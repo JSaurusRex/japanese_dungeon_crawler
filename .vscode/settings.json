@@ -10,6 +10,11 @@
         "stdio.h": "c",
         "string.h": "c",
         "questions.h": "c",
-        "__node_handle": "c"
+        "__node_handle": "c",
+        "battle.h": "c",
+        "sstream": "c",
+        "regex": "c",
+        "strstream": "c",
+        "*.inc": "c"
     }
 }

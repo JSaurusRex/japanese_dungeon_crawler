@@ -57,6 +57,7 @@ void Start_Questions(int amount, int hearts, char * pack, void (*callback)())
         return;
     }
 
+    _feedback_alpha = 0;
     _screen = &QuestionsFrame;
     _answers_amount = amount;
     _answer_counter = 0;
