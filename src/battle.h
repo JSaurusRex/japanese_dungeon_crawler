@@ -56,6 +56,7 @@ struct sItem
     void (*effect_enemy)(sItem *, sEnemy*);
     void (*effect_shield)(sItem*, sShield*);
     void (*effect_item)(sItem*, sItem*);
+    void (*effect_player)(sItem *);
     float enhanced;
     int rounds_disabled;
     int level;
@@ -91,6 +92,7 @@ extern int _level;
 extern int _turn;
 
 
+void heal_player(float amount);
 void take_damage(int lane, Element element, float damage);
 void draw_item(Vector2 pos, sItem * pItem);
 void Battle_Start();

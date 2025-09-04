@@ -16,6 +16,8 @@
 #include "items/shield_repair_item.h"
 #include "items/item_enhancer.h"
 #include "items/attacks/fire_wand1.h"
+#include "items/healing_potion.h"
+#include "items/energy_potion.h"
 #include "shields/shield1.h"
 
 #define LOOT_MAX 14
@@ -192,10 +194,10 @@ void generate_loot(sItemSpawn * itemspawn_table, int size, int amount)
             {
                 for(int spot = 0; spot < LOOT_MAX; spot++)
                 {
-                    if (_loot[i].active)
+                    if (_loot[spot].active)
                         continue;
                     
-                    _loot[i] = *itemspawn_table[item].pItem;
+                    _loot[spot] = *itemspawn_table[item].pItem;
                     break;
                 }
             }
@@ -204,13 +206,15 @@ void generate_loot(sItemSpawn * itemspawn_table, int size, int amount)
             {
                 for(int spot = 0; spot < LOOT_SHIELDS_MAX; spot++)
                 {
-                    if (_loot_shields[i].active)
+                    if (_loot_shields[spot].active)
                         continue;
                     
-                    _loot_shields[i] = *itemspawn_table[item].pShield;
+                    _loot_shields[spot] = *itemspawn_table[item].pShield;
                     break;
                 }
             }
+
+            break;
         }
     }
 }
@@ -245,6 +249,8 @@ void next_level_generate()
         case 0:
         {
             _loot[0] = _prefab_sword1;
+            _loot[1] = _prefab_healing_potion;
+            _loot[2] = _prefab_energy_potion;
             _loot_shields[0] = _prefab_shield1;
             sItemSpawn spawn_table[] = {
                 {&_prefab_sword1, 0, 0.2},

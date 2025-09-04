@@ -212,6 +212,9 @@ void draw_damage_number_particles()
             case ELEMENT_NONE:
             {
                 color = RED;
+
+                if (_damage_number_particles[i].amount > 0)
+                    color = GREEN;
                 break;
             }
 

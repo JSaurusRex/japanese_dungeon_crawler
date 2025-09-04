@@ -24,6 +24,8 @@
 #include "items/attacks/fire_wand1.h"
 #include "shields/shield1.h"
 
+#include "enemies/generic.h"
+
 sEnemy _enemies [MAX_ENEMIES] = {0};
 sItem _inventory [MAX_ITEMS] = {0};
 sItem _item_hand = {0};
@@ -37,7 +39,10 @@ Texture2D _battle_screen_texture;
 int _disabled_slot = -1;
 
 float _health = 10;
+float _shake_timer = 0;
+float _max_health = 100;
 int _level = 1;
+Vector2 _lastPosition;
 
 void try_return_item();
 void next_turn();
@@ -67,6 +72,9 @@ void consume_energy(int energy)
         _turn = -1; //set turn to first enemies
         next_turn();
     }
+
+    if (_energy > _max_energy)
+        _energy = _max_energy;
 }
 
 void next_turn()
@@ -146,7 +154,12 @@ void take_damage(int lane, Element element, float damage)
         }
     }
     else
+    {
+        _shake_timer = 1;
+        emit_particles_explosion(PARTICLE_BLOOD, 2, _lastPosition, (Vector2){60, 40}, 80, 60, 6);
+        add_damage_number_particle(_lastPosition, element, -damage);
         _health -= damage;
+    }
     
     if (_health <= 0)
     {
@@ -166,17 +179,103 @@ void Battle_Init()
 
 void Battle_Reset()
 {
-    _health = 100;
+    _health = _max_health;
     _level = 0;
+}
+
+typedef struct
+{
+    sEnemy * pEnemy;
+    float chance;
+} sEnemySpawn;
+
+void spawn_enemies(sEnemySpawn * enemySpawn_table, int size, int amount)
+{
+    printf("amount %i\n", amount);
+    printf("size %i\n", size);
+    int total_chance = 0;
+    for(int i = 0; i < size; i++)
+    {
+        total_chance += enemySpawn_table[i].chance * 100;
+    }
+
+    printf("total_chance %i\n", total_chance);
+
+    //choose amount random enemies
+    for(int i = 0; i < amount; i++)
+    {
+        int number = rand() % total_chance;
+
+        printf("i %i\n", i);
+
+        int chance = 0;
+        for(int enemy = 0; enemy < size; enemy++)
+        {
+            chance += enemySpawn_table[enemy].chance * 100;
+            if (number > chance)
+                continue;
+            
+            //find empty spot to put enemy in
+            for(int spot = 0; spot < MAX_ENEMIES; spot++)
+            {
+                if (_enemies[spot].active)
+                    continue;
+                
+                printf("spot %i\n", spot);
+                _enemies[spot] = *enemySpawn_table[enemy].pEnemy;
+                _enemies[spot].lane = rand() % MAX_LANES;
+
+                printf("active %i\n", _enemies[spot].active);
+                break;
+            }
+            break;
+        }
+    }
+}
+
+void spawn_enemies_manager()
+{
+    //empty existing loot
+    for(int i = 0; i < MAX_ENEMIES; i++)
+        _enemies[i].active = false;
+    
+    int loottable_levels [0];
+    int level = 0;
+
+    int loottable_levels_amount = sizeof(loottable_levels)/sizeof(int);
+    for(int i = 1; i < loottable_levels_amount; i++)
+    {
+        if ( loottable_levels[i] > _level)
+        {
+            level = loottable_levels[i-1];
+            break;
+        }
+    }
+
+    //generate loot
+    switch(level)
+    {
+        case 0:
+        {
+            sEnemySpawn spawn_table[] = {
+                {&_prefab_enemy1, 0.2},
+                {&_prefab_goblin1, 0.2}
+            };
+
+            spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 2 + rand() % 3);
+            break;
+        }
+    }
 }
 
 void Battle_Start()
 {
     _battle_timer = 0;
     _screen = &Battle_Frame;
-    _enemies[0] = _prefab_enemy1;
-    _enemies[1] = _prefab_goblin1;
-    _enemies[1].lane = 1;
+    // _enemies[0] = _prefab_enemy1;
+    // _enemies[1] = _prefab_goblin1;
+    // _enemies[1].lane = 1;
+    spawn_enemies_manager();
 
     _disabled_slot = rand() % MAX_ITEMS;
 
@@ -453,6 +552,16 @@ void draw_items_UI()
     }
 }
 
+void heal_player(float amount)
+{
+    _health += amount;
+
+    add_damage_number_particle(_lastPosition, ELEMENT_NONE, amount);
+
+    if (_health >= _max_health)
+        _health = _max_health;
+}
+
 void Battle_Frame()
 {
     _battle_timer += GetFrameTime();
@@ -468,14 +577,47 @@ void Battle_Frame()
     DrawTexture(_battle_screen_texture, 0, 0, WHITE);
     render_shadows();
 
+    // render player
+    {
+
+        Vector2 pos = CalculateEnemyPosition(1, -4);
+
+        pos.x += shake_manager(&_shake_timer);
+
+        _lastPosition = pos;
+
+        DrawCircle(pos.x, pos.y, 30, WHITE);
+
+
+        if (pos.x - 15 < GetMouseX() && GetMouseX() < pos.x + 15)
+        {
+            if (pos.y - 15 < GetMouseY() && GetMouseY() < pos.y + 15)
+            {
+                _description = "player";
+
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1)
+                {
+                    printf("clicked player!\n");
+                    if (_item_hand.active && _item_hand.effect_player)
+                    {
+                        (*_item_hand.effect_player)(&_item_hand);
+                    }
+                }
+            }
+        }
+    }
+
     //draw enemies
+    int postition[MAX_LANES] = {0};
     for(int enemy = 0; enemy < MAX_ENEMIES; enemy++)
     {
         if (!_enemies[enemy].active)
             continue;
         
         
-        _enemies[enemy].render(&_enemies[enemy], 0);
+        _enemies[enemy].render(&_enemies[enemy], postition[_enemies[enemy].lane]);
+        
+        postition[_enemies[enemy].lane]++;
 
         Vector2 pos = CalculateEnemyPosition(_enemies[enemy].lane, 0);
 
@@ -505,7 +647,7 @@ void Battle_Frame()
         if (!_enemies[enemy].active)
             continue;
         
-        Vector2 pos = CalculateEnemyPosition(_enemies[enemy].lane, 0);
+        Vector2 pos = _enemies[enemy].lastPosition;
         //draw health numbers
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "hp: %.0f", _enemies[enemy].health);
