@@ -232,7 +232,7 @@ void next_level_generate()
     int loottable_levels_amount = sizeof(loottable_levels)/sizeof(int);
     for(int i = 1; i < loottable_levels_amount; i++)
     {
-        if ( loottable_levels > _level)
+        if ( loottable_levels[i] > _level)
         {
             level = loottable_levels[i-1];
             break;

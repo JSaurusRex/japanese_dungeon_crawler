@@ -25,6 +25,7 @@ int _quiz_hearts = 3;
 int _answers_incorrect = 3;
 char _pack [STRING_LENGTH] = {0};
 int _pack_level = 1;
+int _combo = 0;
 
 bool _show_answer = false;
 
@@ -64,6 +65,8 @@ void Start_Questions(int amount, int hearts, char * pack, int level, void (*call
         printf("error: Start_Questions: Directory does not exist %s\n", path);
         return;
     }
+
+    _combo = 0;
 
     _feedback_alpha = 0;
     _screen = &QuestionsFrame;
@@ -139,15 +142,13 @@ void QuestionsFrame()
                 {
                     //correct
                     FeedbackColor = GREEN;
-
-                   
+                    _combo++;
                 }
                 else
                 {
                     FeedbackColor = RED;
                     _answers_incorrect++;
-
-                    
+                    _combo = 0;                    
                 }
             }else
             {
@@ -172,15 +173,25 @@ void QuestionsFrame()
     {
         ClearBackground(ColorLerp(RAYWHITE, FeedbackColor, powf(_feedback_alpha, 2.0)));
         
-        _feedback_alpha -= GetFrameTime();
-        if (_feedback_alpha < 0)
-            _feedback_alpha = 0;
+        if (!_show_answer)
+        {
+            _feedback_alpha -= GetFrameTime();
+            if (_feedback_alpha < 0)
+                _feedback_alpha = 0;
+        }
         
         //counter
         {
             char str[16];
             snprintf(str, 16, "%i/%i", _answer_counter, _answers_amount);
             DrawTextEx(_fontJapanese, str, (Vector2){ 50, 50 }, 30, 2, BLACK);
+        }
+
+        //combo
+        {
+            char str[16];
+            snprintf(str, 16, "combo %i", _combo);
+            DrawTextEx(_fontJapanese, str, (Vector2){ 600, 15 }, 50, 2, BLACK);
         }
 
         //hearts

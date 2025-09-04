@@ -17,22 +17,17 @@ bool quiz_succeeded()
 float damage_factor_calc(unsigned int random_variance_percent, int crit_percent, float crit_factor)
 {
     float damage_factor = 1;
-    printf("damage factor %.2f\n", damage_factor);
 
     if (_answers_incorrect == 0)
         damage_factor *= 1 + _pItem->enhanced;
-    printf("damage factor %.2f\n", damage_factor);
     
     damage_factor *= (100 - random_variance_percent + rand() % (1 + random_variance_percent * 2)) / 100.0;
-    printf("damage factor %.2f\n", damage_factor);
 
     if (_answers_incorrect == 0 && rand() % 100 < crit_percent)
         damage_factor *= crit_factor;
     
-    printf("crit_factor %.2f\n", crit_factor);
-
-
-    printf("damage factor %.2f\n", damage_factor);
+    damage_factor *= (1+_combo * 0.02);
+    
     return damage_factor;
 }
 

@@ -12,6 +12,7 @@ typedef struct
 
 extern int _quiz_hearts;
 extern int _answers_incorrect;
+extern int _combo;
 
 bool Questions_init();
 void Start_Questions(int amount, int hearts, char * pack, int level, void (*callback)());
