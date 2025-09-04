@@ -253,7 +253,7 @@ void next_level_generate()
                 {&_prefab_shield_repair_item, 0, 0.5}
             };
 
-            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), 5);
+            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), rand() % 3);
             break;
         }
     }

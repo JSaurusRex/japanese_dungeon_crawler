@@ -55,6 +55,9 @@ bool current_exit_item_exist()
         return _exit_shields[_exit_shield_index].active;
 }
 
+sShield * _gameover_kept_shield = 0;
+sItem * _gameover_kept_item = 0;
+
 void Start_quiz_for_item()
 {
     while(_exit_shield_index < MAX_EXIT_SHIELDS)
@@ -94,15 +97,22 @@ void Start_quiz_for_item()
     char * pack = 0;
     int level = 0;
 
+    _gameover_kept_shield = 0;
+    _gameover_kept_item = 0;
+
     if (_exit_item_index < MAX_EXIT_ITEMS)
     {
         pack = _exit_items[_exit_item_index].pack;
         level = _exit_items[_exit_item_index].level;
+
+        _gameover_kept_item = &_exit_items[_exit_item_index];
     }
     else
     {
         pack = _exit_shields[_exit_shield_index].pack;
         level = _exit_shields[_exit_shield_index].level;
+
+        _gameover_kept_shield = &_exit_shields[_exit_shield_index];
     }
 
     level += 1; //make it harder to keep item
@@ -128,6 +138,16 @@ void GameOver_item_result_Frame()
     {
         ClearBackground(GREEN);
         DrawTextEx(_fontJapanese, "You kept the item!", (Vector2){ 240, 200 }, 70, 2, WHITE);
+    }
+
+    if(_gameover_kept_item)
+    {
+        _gameover_kept_item->render(_gameover_kept_item, (Vector2){ 375, 300});
+    }
+
+    if(_gameover_kept_shield)
+    {
+        _gameover_kept_shield->render(_gameover_kept_shield, (Vector2){ 375, 300});
     }
 
     //next button
@@ -288,6 +308,7 @@ void GameOver_Frame()
                 if(pos.y < GetMouseY() && pos.y + 40 > GetMouseY())
                 {
                     printf("Exited to main lobby!\n");
+                    _exit_item_index = -1;
                     Start_quiz_for_item();
                 }
             }
