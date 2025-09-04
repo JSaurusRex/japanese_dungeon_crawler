@@ -10,7 +10,7 @@
 #include "battle.h"
 #include "particles.h"
 #include "shadows.h"
-
+#include "next_level_screen.h"
 #include "sprite_manager.h"
 
 void hub_frame()
@@ -30,7 +30,7 @@ void hub_frame()
                 {
                     printf("entered!\n");
                     Battle_Reset();
-                    Battle_Start();
+                    next_level_generate();
                 }
             }
         }

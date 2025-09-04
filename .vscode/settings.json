@@ -22,6 +22,12 @@
         "shield_repair_item.h": "c",
         "item_enhancer.h": "c",
         "enemy1.h": "c",
-        "shadows.h": "c"
+        "shadows.h": "c",
+        "generic.h": "c",
+        "cmath": "c",
+        "complex": "c",
+        "valarray": "c",
+        "sword1.h": "c",
+        "sprite_manager.h": "c"
     }
 }

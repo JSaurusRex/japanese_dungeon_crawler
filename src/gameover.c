@@ -37,6 +37,12 @@ void Start_GameOver()
     
     _exit_item_index = 0;
     _exit_shield_index = 0;
+
+    for(int i = 0; i < MAX_ITEMS; i++)
+        _inventory[i].rounds_disabled = 0;
+    
+    for(int i = 0; i < MAX_SHIELDS; i++)
+        _shield_inventory[i].health = _shield_inventory[i].max_health;
     
     _screen = &GameOver_Frame;
 }
@@ -165,6 +171,7 @@ void GameOver_item_result()
 
 void GameOver_Frame()
 {
+    _turn = -1;
     DrawTexture(_gameover_screen, 0, 0, WHITE);
 
     DrawTextEx(_fontJapanese, "GameOver", (Vector2){ 240, 20 }, 70, 2, WHITE);

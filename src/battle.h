@@ -88,6 +88,7 @@ extern sItem _inventory [MAX_ITEMS];
 extern sShield _shield_inventory [MAX_SHIELDS];
 extern float _battle_timer;
 extern int _level;
+extern int _turn;
 
 
 void take_damage(int lane, Element element, float damage);

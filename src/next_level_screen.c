@@ -10,6 +10,13 @@
 #include "main.h"
 #include "sprite_manager.h"
 #include "battle.h"
+#include "inbetween_screen.h"
+
+#include "items/attacks/sword1.h"
+#include "items/shield_repair_item.h"
+#include "items/item_enhancer.h"
+#include "items/attacks/fire_wand1.h"
+#include "shields/shield1.h"
 
 #define LOOT_MAX 14
 #define LOOT_SHIELDS_MAX 7
@@ -134,7 +141,9 @@ void next_level_frame()
                 if(pos.y < GetMouseY() && pos.y + 40 > GetMouseY())
                 {
                     printf("pressed next level!\n");
-                    Battle_Start();
+                    _level++;
+                    _inbetween_timer = 0;
+                    _screen = &inbetween_screen_frame;
                 }
             }
         }
@@ -151,7 +160,101 @@ void next_level_frame()
     draw_items_UI();
 }
 
+typedef struct
+{
+    sItem * pItem;
+    sShield * pShield;
+    float chance;
+} sItemSpawn;
+
+void generate_loot(sItemSpawn * itemspawn_table, int size, int amount)
+{
+    int total_chance = 0;
+    for(int i = 0; i < size; i++)
+    {
+        total_chance += itemspawn_table[i].chance * 100;
+    }
+
+    //choose amount random items
+    for(int i = 0; i < amount; i++)
+    {
+        int number = rand() % total_chance;
+
+        int chance = 0;
+        for(int item = 0; item < size; item++)
+        {
+            chance += itemspawn_table[item].chance * 100;
+            if (number > chance)
+                continue;
+            
+            //find empty spot to put item in
+            if (itemspawn_table[item].pItem)
+            {
+                for(int spot = 0; spot < LOOT_MAX; spot++)
+                {
+                    if (_loot[i].active)
+                        continue;
+                    
+                    _loot[i] = *itemspawn_table[item].pItem;
+                    break;
+                }
+            }
+
+            if (itemspawn_table[item].pShield)
+            {
+                for(int spot = 0; spot < LOOT_SHIELDS_MAX; spot++)
+                {
+                    if (_loot_shields[i].active)
+                        continue;
+                    
+                    _loot_shields[i] = *itemspawn_table[item].pShield;
+                    break;
+                }
+            }
+        }
+    }
+}
+
 void next_level_generate()
 {
     _screen = &next_level_frame;
+
+    //empty existing loot
+    for(int i = 0; i < LOOT_MAX; i++)
+        _loot[i].active = false;
+    
+    for(int i = 0; i < LOOT_SHIELDS_MAX; i++)
+        _loot[i].active = false;
+    
+    int loottable_levels [0];
+    int level = 0;
+
+    int loottable_levels_amount = sizeof(loottable_levels)/sizeof(int);
+    for(int i = 1; i < loottable_levels_amount; i++)
+    {
+        if ( loottable_levels > _level)
+        {
+            level = loottable_levels[i-1];
+            break;
+        }
+    }
+
+    //generate loot
+    switch(level)
+    {
+        case 0:
+        {
+            _loot[0] = _prefab_sword1;
+            _loot_shields[0] = _prefab_shield1;
+            sItemSpawn spawn_table[] = {
+                {&_prefab_sword1, 0, 0.2},
+                {&_prefab_firewand1, 0, 0.2},
+                {0, &_prefab_shield1, 0.5},
+                {&_prefab_shield_repair_item, 0, 0.5}
+            };
+
+            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), 5);
+            break;
+        }
+    }
 }

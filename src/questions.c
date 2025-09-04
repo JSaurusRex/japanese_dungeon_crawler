@@ -218,6 +218,9 @@ void QuestionsFrame()
             }
         }
 
+        if (_answers_incorrect == 0)
+            DrawTextEx(_fontJapanese, "Perfect!", (Vector2){ 320, 15 }, 50, 2, GOLD);
+
         //render all answers
         if (_questionType == ENGLISH && !_show_answer)
         {

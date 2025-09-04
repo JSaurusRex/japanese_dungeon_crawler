@@ -17,9 +17,11 @@
 #include "sprite_manager.h"
 
 #include "enemies/enemy1.h"
-#include "items/sword1.h"
+#include "enemies/goblin1.h"
+#include "items/attacks/sword1.h"
 #include "items/shield_repair_item.h"
 #include "items/item_enhancer.h"
+#include "items/attacks/fire_wand1.h"
 #include "shields/shield1.h"
 
 sEnemy _enemies [MAX_ENEMIES] = {0};
@@ -61,6 +63,7 @@ void consume_energy(int energy)
     _energy -= energy;
     if (_energy <= 0)
     {
+        _energy = 0;
         _turn = -1; //set turn to first enemies
         next_turn();
     }
@@ -83,7 +86,7 @@ void next_turn()
 }
 
 void do_next_turn()
-{
+{   
     while(!_enemies[_turn].active && _turn < MAX_ENEMIES)
         _turn++;
     
@@ -155,16 +158,16 @@ void take_damage(int lane, Element element, float damage)
 void Battle_Init()
 {
     _battle_screen_texture = LoadTexture("data/screen/battle_screen.png");
-    _inventory[0] = _prefab_sword1;
-    _inventory[1] = _prefab_shield_repair_item;
-    _inventory[2] = _prefab_item_enhancer;
-    _shield_inventory[0] = _prefab_shield1;
+    // _inventory[0] = _prefab_sword1;
+    // _inventory[1] = _prefab_shield_repair_item;
+    // _inventory[2] = _prefab_firewand1;
+    // _shield_inventory[0] = _prefab_shield1;
 }
 
 void Battle_Reset()
 {
     _health = 100;
-    _level = 1;
+    _level = 0;
 }
 
 void Battle_Start()
@@ -172,6 +175,8 @@ void Battle_Start()
     _battle_timer = 0;
     _screen = &Battle_Frame;
     _enemies[0] = _prefab_enemy1;
+    _enemies[1] = _prefab_goblin1;
+    _enemies[1].lane = 1;
 
     _disabled_slot = rand() % MAX_ITEMS;
 
@@ -183,6 +188,7 @@ void Battle_End()
 {
     _turn = -1;
     _disabled_slot = -1;
+    _energy = _max_energy;
 
     
     try_return_item();
@@ -473,13 +479,6 @@ void Battle_Frame()
 
         Vector2 pos = CalculateEnemyPosition(_enemies[enemy].lane, 0);
 
-        //draw health numbers
-        {
-            char str[STRING_LENGTH];
-            snprintf(str, STRING_LENGTH, "hp: %.0f", _enemies[enemy].health);
-            DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
-        }
-
         {
             if (pos.x - 50 < GetMouseX() && GetMouseX() < pos.x + 50)
             {
@@ -498,7 +497,19 @@ void Battle_Frame()
                 }
             }
         }
+    }
 
+    //draw enemy numbers
+    for(int enemy = 0; enemy < MAX_ENEMIES; enemy++)
+    {
+        if (!_enemies[enemy].active)
+            continue;
+        
+        Vector2 pos = CalculateEnemyPosition(_enemies[enemy].lane, 0);
+        //draw health numbers
+        char str[STRING_LENGTH];
+        snprintf(str, STRING_LENGTH, "hp: %.0f", _enemies[enemy].health);
+        DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
     }
 
     //draw inventory

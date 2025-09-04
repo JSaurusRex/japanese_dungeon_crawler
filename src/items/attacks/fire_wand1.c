@@ -1,0 +1,58 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+#include <raylib.h>
+#include <math.h>
+
+#include "../../battle.h"
+#include "../../questions.h"
+#include "../../sprite_manager.h"
+
+#include "generic.h"
+
+void firewand1_render(sItem * self, Vector2 position);
+void firewand1_effect_enemy(sItem * self, sEnemy * pEnemy);
+
+char firewand1_description [] = "Testing Item\nConsumes 35 energy\ndeals 5";
+
+sItem _prefab_firewand1 = {
+    .active = true,
+    .energy = 35,
+    .effect_enemy = &firewand1_effect_enemy,
+    .effect_shield = 0,
+    .effect_item = 0,
+    .render = &firewand1_render,
+    .pack = "hiragana",
+    .level = 1,
+    .description = firewand1_description
+};
+
+void firewand1_render(sItem * self, Vector2 position)
+{
+    DrawTexture(_firewand1_sprite, position.x, position.y, WHITE);
+}
+
+void firewand1_effect_enemy_finish()
+{
+    if (quiz_succeeded())
+        _pEnemy->takeDamage(_pEnemy, 5 * damage_factor_calc(40, 30, 1.2), ELEMENT_NONE);
+
+    _screen = &Battle_Frame;
+    try_return_item();
+}
+
+void firewand1_effect_enemy(sItem * self, sEnemy * pEnemy)
+{
+    if (!enemy_sanity_checks(pEnemy))
+        return;
+
+    _pEnemy = pEnemy;
+    _pItem = self;
+    self->rounds_disabled = 2;
+    consume_energy(self->energy);
+
+    Start_Questions(5, 3, "hiragana", 1, &firewand1_effect_enemy_finish);
+}
+
