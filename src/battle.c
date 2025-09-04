@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include <raymath.h>
 #include <math.h>
 
 #include "main.h"
@@ -12,9 +13,11 @@
 #include "particles.h"
 #include "shadows.h"
 #include "next_level_screen.h"
+#include "gameover.h"
+#include "sprite_manager.h"
 
 #include "enemies/enemy1.h"
-#include "items/item1.h"
+#include "items/sword1.h"
 #include "items/shield_repair_item.h"
 #include "items/item_enhancer.h"
 #include "shields/shield1.h"
@@ -29,10 +32,14 @@ sShield _shield_hand = {0};
 
 Texture2D _battle_screen_texture;
 
-float _health = 100;
+int _disabled_slot = -1;
+
+float _health = 10;
+int _level = 1;
 
 void try_return_item();
 void next_turn();
+void Battle_End();
 
 int _max_energy = 50;
 int _energy = 50;
@@ -41,9 +48,12 @@ float _turn_breather = 0;
 
 char * _description;
 
+float _battle_timer = 0;
+
 Vector2 CalculateEnemyPosition(int lane, int position)
 {
-    return (Vector2){500 + position * 80 + lane * 10, 240 + lane * 50};
+    float walk_in_animation = Remap(powf(fmin(_battle_timer / 2.0 - lane - position * 3, 1), 0.3), 0, 1, 500, 0);
+    return (Vector2){500 + walk_in_animation + position * 80 + lane * 10, 240 + lane * 50};
 }
 
 void consume_energy(int energy)
@@ -79,9 +89,10 @@ void do_next_turn()
     
     if (_turn >= MAX_ENEMIES)
     {
+        _disabled_slot = rand() % MAX_ITEMS;
         _turn = -1;
         _energy += 25;
-        
+
         if (_energy > _max_energy)
             _energy = _max_energy;
 
@@ -98,6 +109,7 @@ void do_next_turn()
         //switch to loot screen
         if (!enemy_left)
         {
+            Battle_End();
             next_level_generate();
         }
     }
@@ -132,24 +144,72 @@ void take_damage(int lane, Element element, float damage)
     }
     else
         _health -= damage;
+    
+    if (_health <= 0)
+    {
+        Battle_End();
+        Start_GameOver();
+    }
 }
 
 void Battle_Init()
 {
     _battle_screen_texture = LoadTexture("data/screen/battle_screen.png");
+    _inventory[0] = _prefab_sword1;
+    _inventory[1] = _prefab_shield_repair_item;
+    _inventory[2] = _prefab_item_enhancer;
+    _shield_inventory[0] = _prefab_shield1;
+}
+
+void Battle_Reset()
+{
+    _health = 100;
+    _level = 1;
 }
 
 void Battle_Start()
 {
+    _battle_timer = 0;
     _screen = &Battle_Frame;
     _enemies[0] = _prefab_enemy1;
-    _inventory[0] = _prefab_item1;
-    _inventory[1] = _prefab_shield_repair_item;
-    _inventory[2] = _prefab_item_enhancer;
-    _shield_inventory[0] = _prefab_shield1;
+
+    _disabled_slot = rand() % MAX_ITEMS;
 
     _energy = 50;
     _turn = -1;
+}
+
+void Battle_End()
+{
+    _turn = -1;
+    _disabled_slot = -1;
+
+    
+    try_return_item();
+
+    //disable disabling
+    for(int i = 0; i < MAX_ITEMS; i++)
+    {
+        _inventory[i].rounds_disabled = 0;
+    }
+
+    //return shields
+    for(int i = 0; i < MAX_LANES; i++)
+    {
+        if (!_shield_lanes[i].active)
+            continue;
+        
+        for(int shield = 0; shield < MAX_SHIELDS; shield++)
+        {
+            if (_shield_inventory[shield].active)
+                continue;
+            
+            //copy
+            _shield_inventory[shield] = _shield_lanes[i];
+            break;
+        }
+        _shield_lanes[i].active = false;
+    }
 }
 
 void try_return_item()
@@ -164,6 +224,7 @@ void try_return_item()
             //copy
             _inventory[item] = _item_hand;
             _item_hand.active = false;
+            break;
         }
     }
 
@@ -177,6 +238,7 @@ void try_return_item()
             //copy
             _shield_inventory[shield] = _shield_hand;
             _shield_hand.active = false;
+            break;
         }
     }
 }
@@ -247,10 +309,15 @@ void draw_inventory()
         if (!_inventory[item].active)
         {
             bool interactable = IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1;
-            if (mouse_inside && _item_hand.active && interactable)
+            if (mouse_inside && _item_hand.active && interactable && _disabled_slot != item)
             {
                 _inventory[item] = _item_hand;
                 _item_hand.active = false;
+            }
+
+            if (_disabled_slot == item)
+            {
+                DrawTexture(_disabled_slot_sprite, pos.x-10, pos.y-10, WHITE);
             }
 
             continue;
@@ -259,8 +326,13 @@ void draw_inventory()
 
         draw_item(pos, &_inventory[item]);
         
+        if (_disabled_slot == item)
+        {
+            DrawTexture(_disabled_slot_sprite, pos.x-10, pos.y-10, WHITE);
+        }
+
         //item input / mouse behaviour
-        if (mouse_inside)
+        if (mouse_inside && _disabled_slot != item)
         {
             _description = _inventory[item].description;
 
@@ -285,7 +357,7 @@ void draw_inventory()
     //draw shields
     for(int shield = 0; shield < MAX_SHIELDS; shield++)
     {
-        Vector2 pos = (Vector2){10, 10 + shield * 50};
+        Vector2 pos = (Vector2){20, 10 + shield * 80};
 
         bool mouse_inside = false;
         if (pos.x < GetMouseX() && GetMouseX() < pos.x + 50)
@@ -301,6 +373,8 @@ void draw_inventory()
 
         if (!_shield_inventory[shield].active)
         {
+            DrawCircle(pos.x+25, pos.y+25, 15, YELLOW);
+
             if (interactable && mouse_inside && _shield_hand.active)
             {
                 _shield_inventory[shield] = _shield_hand;
@@ -375,6 +449,8 @@ void draw_items_UI()
 
 void Battle_Frame()
 {
+    _battle_timer += GetFrameTime();
+
     if (_turn_breather > 0)
     {
         _turn_breather -= GetFrameTime();
@@ -505,6 +581,13 @@ void Battle_Frame()
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "Health: %i\nEnergy: %i/%i", (int)_health, _energy, _max_energy);
         DrawTextEx(_fontJapanese, str, (Vector2){ 120, 10 }, 30, 2, WHITE);
+    }
+
+    //draw level number
+    {
+        char str[STRING_LENGTH];
+        snprintf(str, STRING_LENGTH, "Level: %i", _level);
+        DrawTextEx(_fontJapanese, str, (Vector2){ 590, 10 }, 60, 2, WHITE);
     }
 
     draw_items_UI();

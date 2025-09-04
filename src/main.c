@@ -10,12 +10,13 @@
 #include "battle.h"
 #include "sprite_manager.h"
 #include "next_level_screen.h"
+#include "hub.h"
 
 
 bool _printDebug = true;
 Font _fontJapanese;
 
-void (*_screen)() = &next_level_frame;
+void (*_screen)() = &hub_frame;
 
 void EmptyScreen();
 

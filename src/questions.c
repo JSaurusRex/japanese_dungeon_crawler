@@ -24,7 +24,7 @@ int _answers_amount = 5;
 int _quiz_hearts = 3;
 int _answers_incorrect = 3;
 char _pack [STRING_LENGTH] = {0};
-int _level = 1;
+int _pack_level = 1;
 
 bool _show_answer = false;
 
@@ -77,7 +77,7 @@ void Start_Questions(int amount, int hearts, char * pack, int level, void (*call
     _callback = callback;
 
     strncpy(_pack, pack, STRING_LENGTH);
-    _level = level;
+    _pack_level = level;
 
     LoadRandomQuestion(pack, &_question, level);
     
@@ -152,7 +152,7 @@ void QuestionsFrame()
             }else
             {
                 _show_answer = false;
-                LoadRandomQuestion(_pack, &_question, _level);
+                LoadRandomQuestion(_pack, &_question, _pack_level);
                 while(_input_str_cursor >= 0)
                 {
                     _input_str[_input_str_cursor] = 0;

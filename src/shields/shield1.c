@@ -21,6 +21,8 @@ sShield _prefab_shield1 = {
     .max_health = 40,
     .render = &ShieldRender,
     .take_damage = &ShieldTakeDamage,
+    .pack = "hiragana",
+    .level = 1,
     .description = shield1_description
 };
 

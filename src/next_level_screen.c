@@ -125,7 +125,7 @@ void next_level_frame()
     //next level button
     {
         Vector2 pos = (Vector2){ 120, 10 };
-        DrawTextEx(_fontJapanese, "next level", pos, 30, 2, WHITE);
+        DrawTextEx(_fontJapanese, "next level", pos, 30, 2, BLACK);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -138,6 +138,14 @@ void next_level_frame()
                 }
             }
         }
+    }
+
+    //you won text
+    {
+        Vector2 pos = (Vector2){ 350, 10 };
+        char str[STRING_LENGTH];
+        snprintf(str, STRING_LENGTH, "completed level %i\npick your loot", _level);
+        DrawTextEx(_fontJapanese, str, pos, 30, 2, BLACK);
     }
 
     draw_items_UI();

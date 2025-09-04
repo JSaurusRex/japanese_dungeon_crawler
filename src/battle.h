@@ -4,7 +4,10 @@
 #include <raylib.h>
 #include <stdbool.h>
 
+#include "main.h"
+
 void Battle_Init();
+void Battle_Reset();
 void Battle_Frame();
 void try_return_item();
 void next_turn();
@@ -58,6 +61,7 @@ struct sItem
     int level;
 
     char * description;
+    char pack[STRING_LENGTH];
 };
 
 
@@ -69,15 +73,22 @@ struct sShield
     float shake_timer;
     void (*render)(sShield *, Vector2);
     void (*take_damage)(sShield *, sEnemy*, Element, float);
+    int level;
 
     char * description;
     Vector2 lastPosition;
+    char pack[STRING_LENGTH];
 };
 
 extern float _health;
 extern char * _description;
 extern sItem _item_hand;
 extern sShield _shield_hand;
+extern sItem _inventory [MAX_ITEMS];
+extern sShield _shield_inventory [MAX_SHIELDS];
+extern float _battle_timer;
+extern int _level;
+
 
 void take_damage(int lane, Element element, float damage);
 void draw_item(Vector2 pos, sItem * pItem);
