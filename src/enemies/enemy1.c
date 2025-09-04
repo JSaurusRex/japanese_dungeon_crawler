@@ -58,7 +58,7 @@ void EnemyTakeDamage(sEnemy * self, float damage, Element element)
     printf("enemy took %.2f damage\n", damage);
     self->health -= damage;
 
-    add_damage_number_particle(self->lastPosition, element, damage);
+    add_damage_number_particle(self->lastPosition, element, -damage);
 
     if (damage > 0)
         self->shake_timer = 1;

@@ -26,6 +26,12 @@ int _answers_incorrect = 3;
 char _pack [STRING_LENGTH] = {0};
 int _level = 1;
 
+bool _show_answer = false;
+
+typedef enum {ENGLISH, ROMAJI} QuestionType;
+
+QuestionType _questionType;
+
 void (*_callback)() = 0;
 
 
@@ -65,6 +71,7 @@ void Start_Questions(int amount, int hearts, char * pack, int level, void (*call
     _answer_counter = 0;
     _answers_incorrect = 0;
     _quiz_hearts = hearts;
+    _show_answer = false;
     strncpy(_pack, pack, STRING_LENGTH);
 
     _callback = callback;
@@ -85,66 +92,78 @@ void QuestionsFrame()
 {
     //input
     {
-        char c = GetCharPressed();
-
-        while(c && _input_str_cursor < STRING_LENGTH)
+        if (!_show_answer)
         {
-            if (_printDebug)
-                printf("debug: user pressed %c, cursor %i\n", c, _input_str_cursor);
-            
-            _input_str_cursor++;
-            _input_str[_input_str_cursor] = c;
-            c = GetCharPressed();
-        }
+            char c = GetCharPressed();
 
-        if (IsKeyPressedRepeat(KEY_BACKSPACE) || IsKeyPressed(KEY_BACKSPACE))
-        {
-            if (_printDebug)
-                printf("debug: user pressed backspace\n");
-            
-            while(_input_str_cursor >= 0)
+            while(c && _input_str_cursor < STRING_LENGTH)
             {
-                _input_str[_input_str_cursor] = 0;
-                _input_str_cursor--;
+                if (_printDebug)
+                    printf("debug: user pressed %c, cursor %i\n", c, _input_str_cursor);
+                
+                _input_str_cursor++;
+                _input_str[_input_str_cursor] = c;
+                c = GetCharPressed();
+            }
 
-                if (!IsKeyDown(KEY_LEFT_CONTROL))
-                    break;
+            if (IsKeyPressedRepeat(KEY_BACKSPACE) || IsKeyPressed(KEY_BACKSPACE))
+            {
+                if (_printDebug)
+                    printf("debug: user pressed backspace\n");
+                
+                while(_input_str_cursor >= 0)
+                {
+                    _input_str[_input_str_cursor] = 0;
+                    _input_str_cursor--;
+
+                    if (!IsKeyDown(KEY_LEFT_CONTROL))
+                        break;
+                }
             }
         }
 
         if (IsKeyPressed(KEY_ENTER))
         {
-            _answer_counter++;
-            _feedback_alpha = 1;
-
-            if (strncmp(_question.english, _input_str, STRING_LENGTH) == 0)
+            if (!_show_answer)
             {
-                //correct
-                FeedbackColor = GREEN;
+                _answer_counter++;
+                _feedback_alpha = 1;
+                _show_answer = true;
 
-                if (_answer_counter >= _answers_amount)
+                char * answer = _question.english;
+
+                if (_questionType == ROMAJI)
+                    answer = _question.romaji;
+
+                if (strncmp(answer, _input_str, STRING_LENGTH) == 0)
+                {
+                    //correct
+                    FeedbackColor = GREEN;
+
+                   
+                }
+                else
+                {
+                    FeedbackColor = RED;
+                    _answers_incorrect++;
+
+                    
+                }
+            }else
+            {
+                _show_answer = false;
+                LoadRandomQuestion(_pack, &_question, _level);
+                while(_input_str_cursor >= 0)
+                {
+                    _input_str[_input_str_cursor] = 0;
+                    _input_str_cursor--;
+                }
+
+                if (_answer_counter >= _answers_amount || _answers_incorrect >= _quiz_hearts)
                 {
                     (*_callback)();
                     return;
                 }
-            }
-            else
-            {
-                FeedbackColor = RED;
-                _answers_incorrect++;
-
-                if (_answers_incorrect >= _quiz_hearts)
-                {
-                    (*_callback)();
-                    return;
-                }
-            }
-
-            LoadRandomQuestion(_pack, &_question, _level);
-            while(_input_str_cursor >= 0)
-            {
-                _input_str[_input_str_cursor] = 0;
-                _input_str_cursor--;
             }
         }
     }
@@ -174,16 +193,42 @@ void QuestionsFrame()
         DrawTextEx(_fontJapanese, _question.japanese, (Vector2){ 400, 100 }, 50, 2, BLACK);
 
         //input
-        DrawTextEx(_fontJapanese, _input_str, (Vector2){ 400, 200 }, 50, 2, BLACK);
+        DrawRectangle(280, 195, 300, 60, ColorAlpha(YELLOW, 0.5));
+        DrawTextEx(_fontJapanese, _input_str, (Vector2){ 300, 200 }, 50, 2, BLACK);
+
+        //romaji or english
+
+        if (_questionType == ROMAJI)
+            DrawTextEx(_fontJapanese, "ROMAJI", (Vector2){ 30, 200 }, 50, 2, BLACK);
+        else
+            DrawTextEx(_fontJapanese, "ENGLISH", (Vector2){ 30, 200 }, 50, 2, BLACK);
+        
+        //draw answer
+        if (_show_answer)
+        {
+            if (_questionType == ROMAJI)
+            {
+                DrawTextEx(_fontJapanese, _question.romaji, (Vector2){ 400, 150 }, 50, 2, BLACK);
+                DrawTextEx(_fontJapanese, _question.english, (Vector2){ 400, 250 }, 50, 2, BLACK);
+            }
+            else
+            {
+                DrawTextEx(_fontJapanese, _question.english, (Vector2){ 400, 150 }, 50, 2, BLACK);
+                DrawTextEx(_fontJapanese, _question.romaji, (Vector2){ 400, 250 }, 50, 2, BLACK);
+            }
+        }
 
         //render all answers
-        int shown = 0;
-        for(int i = 0; i < _questions_count && shown < 11; i++)
+        if (_questionType == ENGLISH && !_show_answer)
         {
-            if(_input_str_cursor == -1 || strstr(_all_questions[i].english, _input_str))
+            int shown = 0;
+            for(int i = 0; i < _questions_count && shown < 11; i++)
             {
-                DrawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 400, 250 + shown * 40 }, 35, 2, BLACK);
-                shown++;
+                if(_input_str_cursor == -1 || strstr(_all_questions[i].english, _input_str))
+                {
+                    DrawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 400, 250 + shown * 40 }, 35, 2, BLACK);
+                    shown++;
+                }
             }
         }
     }
@@ -288,6 +333,14 @@ bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
 
     ProcessQuestionsFile(files.paths[randomIndex], question);
 
+    _questionType = rand() % (ENGLISH + 1);
+
+    if (question->english[0] == 0)
+        _questionType = ROMAJI;
+    
+    if (question->romaji[0] == 0)
+        _questionType = ENGLISH;
+
     if(_printDebug)
     {
         printf("debug: LoadRandomQuestion: new english word: %s\n", question->english);
@@ -299,6 +352,9 @@ bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
 
 bool ProcessQuestionsFile(char * file, sQuestion * question)
 {
+    sQuestion empty = {0};
+    *question = empty;
+
     char * text = LoadFileText(file);
     if (!text)
     {
@@ -352,6 +408,21 @@ bool ProcessQuestionsFile(char * file, sQuestion * question)
                 }
                 
                 question->english[i] = 0;
+                break;
+            }
+
+            case 'r':
+            {
+                //copy string
+                int i = 0;
+                while(index < length && text[index] != '\n' && i < STRING_LENGTH-1)
+                {
+                    question->romaji[i] = text[index];
+                    index++;
+                    i++;
+                }
+                
+                question->romaji[i] = 0;
                 break;
             }
         }

@@ -7,6 +7,7 @@ typedef struct
 {
     char japanese[STRING_LENGTH];
     char english[STRING_LENGTH];
+    char romaji[STRING_LENGTH];
 } sQuestion;
 
 extern int _quiz_hearts;

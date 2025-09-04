@@ -3,12 +3,14 @@
 #include <stdbool.h>
 
 #include <raylib.h>
+#include <time.h>
 
 #include "main.h"
 #include "questions.h"
 #include "battle.h"
 #include "sprite_manager.h"
 #include "next_level_screen.h"
+
 
 bool _printDebug = true;
 Font _fontJapanese;
@@ -20,6 +22,7 @@ void EmptyScreen();
 void main() {
     SetWindowState(FLAG_MSAA_4X_HINT);
     InitWindow(800, 600, "Japanese text test");
+    srand(time(NULL));
 
     int total = (0x9FFF - 0x3040) + LATIN_UNICODE;
 
@@ -40,8 +43,6 @@ void main() {
     Questions_init();
     Battle_Init();
     sprite_manager_init();
-
-    srand(GetTime());
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
