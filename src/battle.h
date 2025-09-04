@@ -38,6 +38,7 @@ struct sEnemy
     void (*takeDamage)(sEnemy *, float, Element);
 
     char * description;
+    Vector2 lastPosition;
 };
 
 typedef struct sItem sItem;
@@ -70,6 +71,7 @@ struct sShield
     void (*take_damage)(sShield *, sEnemy*, Element, float);
 
     char * description;
+    Vector2 lastPosition;
 };
 
 extern float _health;

@@ -41,6 +41,7 @@ void EnemyRender(sEnemy * self, int position)
     pos.x -= pow(sin(self->attack_animation_timer * PI), 3) * 80;
 
     DrawRectangle(pos.x, pos.y, 50, 50, BROWN);
+    self->lastPosition = pos;
 }
 
 void EnemyTurn(sEnemy * self)
@@ -57,7 +58,10 @@ void EnemyTakeDamage(sEnemy * self, float damage, Element element)
     printf("enemy took %.2f damage\n", damage);
     self->health -= damage;
 
-    self->shake_timer = 1;
+    add_damage_number_particle(self->lastPosition, element, damage);
+
+    if (damage > 0)
+        self->shake_timer = 1;
 
     if (self->health <= 0)
         self->active = false;

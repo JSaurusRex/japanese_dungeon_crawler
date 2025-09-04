@@ -51,10 +51,6 @@ void consume_energy(int energy)
     _energy -= energy;
     if (_energy <= 0)
     {
-        _energy += 25;
-
-        if (_energy > _max_energy)
-            _energy = _max_energy;
         _turn = -1; //set turn to first enemies
         next_turn();
     }
@@ -64,11 +60,13 @@ void next_turn()
 {
     //de-enhance items
     if(_turn == -1)
+    {        
         for(int i = 0; i < MAX_ITEMS; i++)
         {
-            _inventory[i].enhanced = 1;
+            _inventory[i].enhanced = 0;
             _inventory[i].rounds_disabled--;
         }
+    }
 
     _turn_breather = 1;
     _turn++;
@@ -82,7 +80,10 @@ void do_next_turn()
     if (_turn >= MAX_ENEMIES)
     {
         _turn = -1;
-        _energy = _max_energy;
+        _energy += 25;
+        
+        if (_energy > _max_energy)
+            _energy = _max_energy;
 
         //check if any enemies are left
         bool enemy_left = false;
@@ -182,7 +183,7 @@ void try_return_item()
 
 void draw_item(Vector2 pos, sItem * pItem)
 {
-    if (pItem->enhanced > 1)
+    if (pItem->enhanced > 0)
         DrawCircle(pos.x+25, pos.y+25, 30, GOLD);
 
     if (pItem->render)

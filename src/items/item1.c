@@ -35,7 +35,18 @@ sItem * _pItem = 0;
 void Item_effect_enemy_finish()
 {
     if (_answers_incorrect < _quiz_hearts)
-        (*_pEnemy->takeDamage)(_pEnemy, 5 * (_answers_incorrect == 0 ? _pItem->enhanced : 1), ELEMENT_NONE);
+    {
+        float damage_factor = 1;
+        if (_answers_incorrect == 0)
+            damage_factor *= 1 + _pItem->enhanced;
+        
+        damage_factor *= 0.8 + (rand() % 40) * 0.01;
+
+        if (_answers_incorrect == 0 && rand() % 5 == 0)
+            damage_factor *= 1.2;
+
+        (*_pEnemy->takeDamage)(_pEnemy, 5 * damage_factor, ELEMENT_NONE);
+    }
     _screen = &Battle_Frame;
     try_return_item();
 }

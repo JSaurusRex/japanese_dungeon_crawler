@@ -44,7 +44,7 @@ void Item_enhancer_effect(sItem * self, sItem * pItem)
         return;
     }
 
-    pItem->enhanced = 1.5;
+    pItem->enhanced = 0.5;
     self->active = false;
 }
 

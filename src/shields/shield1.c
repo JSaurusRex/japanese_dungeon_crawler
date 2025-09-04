@@ -36,10 +36,12 @@ void ShieldRender(sShield * self, Vector2 position)
         position.x += sin(self->shake_timer * 40) * 10 * self->shake_timer;
     // DrawRectangle(position.x, position.y, 50, 50, DARKGRAY);
     DrawTextureEx(_sprite_shield1, position, 0, 0.1, WHITE);
+    self->lastPosition = position;
 }
 
 void ShieldTakeDamage(sShield * self, sEnemy * pEnemy, Element element, float damage)
 {
+    add_damage_number_particle(self->lastPosition, element, damage);
     self->health -= damage;
     self->shake_timer = 1;
 }
