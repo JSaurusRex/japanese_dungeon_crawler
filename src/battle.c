@@ -272,7 +272,7 @@ void spawn_enemies_manager()
 void Battle_Start()
 {
     _battle_timer = 0;
-    _screen = &Battle_Frame;
+    change_screen(&Battle_Frame);
     _turn_breather = 0;
     // _enemies[0] = _prefab_enemy1;
     // _enemies[1] = _prefab_goblin1;

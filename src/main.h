@@ -9,7 +9,8 @@
 extern bool _printDebug;
 extern Font _fontJapanese;
 
-extern void (*_screen)();
+// extern void (*_screen)();
+void change_screen(void (*next_screen)());
 
 
 

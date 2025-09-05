@@ -70,7 +70,7 @@ void Start_Questions(int amount, int hearts, char * pack, int level, void (*call
     _combo = 0;
 
     _feedback_alpha = 0;
-    _screen = &QuestionsFrame;
+    change_screen(&QuestionsFrame);
     _answers_amount = amount;
     _answer_counter = 0;
     _answers_incorrect = 0;

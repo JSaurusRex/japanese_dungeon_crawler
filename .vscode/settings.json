@@ -33,6 +33,7 @@
         "healing_potion.h": "c",
         "math.h": "c",
         "rendering.h": "c",
-        "raylib.h": "c"
+        "raylib.h": "c",
+        "next_level_screen.h": "c"
     }
 }

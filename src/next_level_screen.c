@@ -147,7 +147,7 @@ void next_level_frame()
                     printf("pressed next level!\n");
                     _level++;
                     _inbetween_timer = 0;
-                    _screen = &inbetween_screen_frame;
+                    change_screen(&inbetween_screen_frame);
                 }
             }
         }
@@ -223,7 +223,7 @@ void generate_loot(sItemSpawn * itemspawn_table, int size, int amount)
 
 void next_level_generate()
 {
-    _screen = &next_level_frame;
+    change_screen(&next_level_frame);
 
     //empty existing loot
     for(int i = 0; i < LOOT_MAX; i++)
@@ -259,10 +259,10 @@ void next_level_generate()
                 {&_prefab_firewand1, 0, 0.2},
                 {0, &_prefab_shield1, 0.5},
                 {&_prefab_shield_repair_item, 0, 0.5},
-                {&_prefab_upgrade_item, 0, 7}
+                {&_prefab_upgrade_item, 0, 0.2}
             };
 
-            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), rand() % 5);
+            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), rand() % 3);
             break;
         }
     }

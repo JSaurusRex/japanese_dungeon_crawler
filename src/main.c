@@ -3,8 +3,10 @@
 #include <stdbool.h>
 
 #include <raylib.h>
+#include <math.h>
 #include <time.h>
 
+#include "rendering.h"
 #include "main.h"
 #include "questions.h"
 #include "battle.h"
@@ -16,9 +18,19 @@
 bool _printDebug = true;
 Font _fontJapanese;
 
+float _transition_timer = 1;
+
 void (*_screen)() = &hub_frame;
 
 void EmptyScreen();
+
+void (*_next_screen)() = &hub_frame;
+
+void change_screen(void (*next_screen)())
+{
+    _transition_timer = 1;
+    _next_screen = next_screen;
+}
 
 void main() {
     SetWindowState(FLAG_MSAA_4X_HINT);
@@ -66,6 +78,23 @@ void main() {
         BeginDrawing();
         
         (*_screen)();
+
+        if (_transition_timer > 0.5)
+        {
+            _transition_timer -= GetFrameTime();
+            if (_transition_timer <= 0.5)
+            {
+                _screen = _next_screen;
+            }
+        }else
+        {
+            _transition_timer -= GetFrameTime();
+
+            if (_transition_timer < 0)
+                _transition_timer = 0;
+        }
+        
+        drawRectangle(0, 0, 800, 600, ColorAlpha(BLACK, sin(_transition_timer*PI)));
 
         EndDrawing();
     }
