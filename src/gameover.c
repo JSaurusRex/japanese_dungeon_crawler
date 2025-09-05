@@ -313,10 +313,22 @@ void GameOver_Frame()
                 {
                     printf("Exited to main lobby!\n");
                     _exit_item_index = -1;
+
+                    if (_level > _highscore)
+                        _highscore = _level;
+
                     Start_quiz_for_item();
                 }
             }
         }
+    }
+
+    //exit button
+    {
+        Vector2 pos = (Vector2){ 330, 400};
+        char str[STRING_LENGTH];
+        snprintf(str, STRING_LENGTH, "Level %i\nHighscore %i", _level, _highscore);
+        drawTextEx(_fontJapanese, str, pos, 50, 2, WHITE);
     }
 
 

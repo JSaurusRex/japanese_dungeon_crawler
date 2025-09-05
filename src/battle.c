@@ -43,7 +43,8 @@ int _disabled_slot = -1;
 float _health = 10;
 float _shake_timer = 0;
 float _max_health = 100;
-int _level = 1;
+int _level = 0;
+int _highscore = 0;
 Vector2 _lastPosition;
 
 void try_return_item();

@@ -13,6 +13,7 @@
 #include "sprite_manager.h"
 #include "next_level_screen.h"
 #include "hub.h"
+#include "load_save.h"
 
 
 bool _printDebug = true;
@@ -30,6 +31,9 @@ void change_screen(void (*next_screen)())
 {
     _transition_timer = 1;
     _next_screen = next_screen;
+
+    if (next_screen == &hub_frame)
+        save_save();
 }
 
 void main() {
@@ -37,6 +41,8 @@ void main() {
     SetWindowState(FLAG_WINDOW_RESIZABLE);
     InitWindow(800, 600, "Japanese text test");
     srand(time(NULL));
+
+    load_save();
 
     int total = (0x9FFF - 0x3040) + LATIN_UNICODE;
 

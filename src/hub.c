@@ -36,4 +36,12 @@ void hub_frame()
             }
         }
     }
+
+    //draw highscoer
+    {
+        Vector2 pos = (Vector2){ 280, 100};
+        char str[STRING_LENGTH];
+        snprintf(str, STRING_LENGTH, "highscore %i", _highscore);
+        drawTextEx(_fontJapanese, str, pos, 40, 2, BLACK);
+    }
 }

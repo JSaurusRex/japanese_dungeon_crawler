@@ -49,6 +49,7 @@ typedef struct sShield sShield;
 
 struct sItem
 {
+    int load_id;
     bool active;
     int energy;
     float shake_timer;
@@ -68,6 +69,7 @@ struct sItem
 
 struct sShield
 {
+    int load_id;
     bool active;
     float health;
     int max_health;
@@ -90,6 +92,7 @@ extern sShield _shield_inventory [MAX_SHIELDS];
 extern float _battle_timer;
 extern int _level;
 extern int _turn;
+extern int _highscore;
 
 
 void heal_player(float amount);
