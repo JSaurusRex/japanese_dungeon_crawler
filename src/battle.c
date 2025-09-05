@@ -602,7 +602,7 @@ void Battle_Frame()
 
         pos.x += shake_manager(&_shake_timer);
 
-        add_shadow(pos, 0.7, true);
+        add_shadow((Vector2){pos.x, pos.y+30}, 0.7, true);
 
         _lastPosition = pos;
 
