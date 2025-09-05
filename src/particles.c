@@ -246,6 +246,15 @@ void draw_damage_number_particles()
 
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "%i", _damage_number_particles[i].amount);
-        drawText(str, _damage_number_particles[i].position.x, _damage_number_particles[i].position.y, 14, color);
+        drawText(str, _damage_number_particles[i].position.x, _damage_number_particles[i].position.y, 17, color);
     }
+}
+
+void clear_all_particles()
+{
+    for(int i = 0; i < MAX_PARTICLES; i++)
+        _particles[i].used = false;
+    
+    for(int i = 0; i < MAX_DAMAGE_NUMBER_PARTICLES; i++)
+        _damage_number_particles[i].used = false;
 }

@@ -153,6 +153,27 @@ void next_level_frame()
         }
     }
 
+    //skip 7 levels button
+    if((_level - 3) % 10 == 0)
+    {
+        Vector2 pos = (Vector2){ 240, 10 };
+        drawTextEx(_fontJapanese, "skip 7 levels", pos, 30, 2, BLACK);
+
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            if (pos.x < getMouseX() && pos.x + 80 > getMouseX())
+            {
+                if(pos.y < getMouseY() && pos.y + 40 > getMouseY())
+                {
+                    printf("pressed skip 7 levels!\n");
+                    _level += 7;
+                    _inbetween_timer = 0;
+                    change_screen(&inbetween_screen_frame);
+                }
+            }
+        }
+    }
+
     //you won text
     {
         Vector2 pos = (Vector2){ 350, 10 };
@@ -230,7 +251,7 @@ void next_level_generate()
         _loot[i].active = false;
     
     for(int i = 0; i < LOOT_SHIELDS_MAX; i++)
-        _loot[i].active = false;
+        _loot_shields[i].active = false;
     
     int loottable_levels [0];
     int level = 0;

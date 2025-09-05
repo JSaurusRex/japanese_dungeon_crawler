@@ -17,7 +17,7 @@ void draw_inventory();
 void draw_items_UI();
 
 #define MAX_ENEMIES 8
-#define MAX_ITEMS 14
+#define MAX_ITEMS 7
 #define MAX_LANES 3
 #define MAX_SHIELDS 5
 

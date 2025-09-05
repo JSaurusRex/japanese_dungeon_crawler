@@ -50,7 +50,7 @@ void main() {
     }
 
     // Load font with all Japanese glyphs
-    _fontJapanese = LoadFontEx("data/fonts/NotoSansJP-Regular.ttf", 50, codepoints, total);
+    _fontJapanese = LoadFontEx("data/fonts/NotoSansJP-Regular.ttf", 100, codepoints, total);
 
     free(codepoints);
 

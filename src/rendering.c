@@ -54,7 +54,8 @@ void drawTexture(Texture2D texture, int x, int y, Color color)
 
 void drawText(const char * text, int x, int y, float fontSize, Color color)
 {
-    DrawText(text, x, y, fontSize, color);
+    Vector2 pos = game_to_window_scaling(x, y);
+    DrawText(text, pos.x, pos.y, fontSize * game_to_window_scaling_f(), color);
 }
 
 int getMouseX()

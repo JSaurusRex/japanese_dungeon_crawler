@@ -154,7 +154,6 @@ void QuestionsFrame()
             }else
             {
                 _show_answer = false;
-                LoadRandomQuestion(_pack, &_question, _pack_level);
                 while(_input_str_cursor >= 0)
                 {
                     _input_str[_input_str_cursor] = 0;
@@ -165,6 +164,9 @@ void QuestionsFrame()
                 {
                     (*_callback)();
                     return;
+                }else
+                {
+                    LoadRandomQuestion(_pack, &_question, _pack_level);
                 }
             }
         }

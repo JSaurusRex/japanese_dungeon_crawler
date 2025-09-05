@@ -166,6 +166,9 @@ void GameOver_item_result_Frame()
                 }
             }
         }
+
+        if(IsKeyPressed(KEY_ENTER))
+            Start_quiz_for_item();
     }
 }
 

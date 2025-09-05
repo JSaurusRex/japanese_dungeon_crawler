@@ -22,6 +22,7 @@ void emit_particles_explosion(Particle_type type, float lifetime, Vector2 positi
 void add_particle(Vector2 position, Vector2 velocity, float gravity, Particle_type type, float lifetime, float damping);
 void remove_particle(int particle);
 void draw_particles();
+void clear_all_particles();
 
 typedef struct
 {

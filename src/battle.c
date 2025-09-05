@@ -28,6 +28,7 @@
 #include "enemies/generic.h"
 
 sEnemy _enemies [MAX_ENEMIES] = {0};
+int _enemy_empowered = -1;
 sItem _inventory [MAX_ITEMS] = {0};
 sItem _item_hand = {0};
 
@@ -61,7 +62,7 @@ float _battle_timer = 0;
 Vector2 CalculateEnemyPosition(int lane, int position)
 {
     float walk_in_animation = Remap(powf(fmin(_battle_timer / 2.0 - lane - position * 1.2, 1), 0.3), 0, 1, 500, 0);
-    return (Vector2){500 + walk_in_animation + position * 80 + lane * 10, 240 + lane * 50};
+    return (Vector2){500 + walk_in_animation + position * 80 + lane * 10, 200 + lane * 50};
 }
 
 void consume_energy(int energy)
@@ -105,6 +106,10 @@ void do_next_turn()
         _turn = -1;
         _energy += 25;
 
+        _enemy_empowered = rand() % MAX_ENEMIES;
+        if (rand() % 2 == 0)
+            _enemy_empowered = -1;
+
         if (_energy > _max_energy)
             _energy = _max_energy;
 
@@ -137,12 +142,19 @@ void take_damage(int lane, Element element, float damage)
         return;
     }
 
+    //random variance
+    damage *= (80 + rand() % 40) * 0.01;
+
+    if (_turn == _enemy_empowered && _enemy_empowered != -1)
+        damage *= 1.5;
+
     if (_shield_lanes[lane].active)
     {
         _shield_lanes[lane].take_damage(&_shield_lanes[lane], 0, element, damage);
 
         if (_shield_lanes[lane].health <= 0)
         {
+            _shield_lanes[lane].health = 0;
             //put shield back in inventory
             for(int i = 0; i < MAX_SHIELDS; i++)
             {
@@ -263,7 +275,7 @@ void spawn_enemies_manager()
                 {&_prefab_goblin1, 0.2}
             };
 
-            spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 2 + rand() % 3);
+            spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 1 + rand() % 3);
             break;
         }
     }
@@ -274,9 +286,11 @@ void Battle_Start()
     _battle_timer = 0;
     change_screen(&Battle_Frame);
     _turn_breather = 0;
+    _shake_timer;
     // _enemies[0] = _prefab_enemy1;
     // _enemies[1] = _prefab_goblin1;
     // _enemies[1].lane = 1;
+    clear_all_particles;
     spawn_enemies_manager();
 
     _disabled_slot = rand() % MAX_ITEMS;
@@ -392,7 +406,7 @@ void draw_inventory()
         int x = item % 7;
         int y = floor(item / 7.0);
 
-        Vector2 pos = (Vector2){30 + x * 80, 430 + y * 100};
+        Vector2 pos = (Vector2){30 + x * 80, 480 + y * 100};
 
         drawRectangle(pos.x - 10, pos.y - 10, 75, 75, ColorAlpha(BLACK, 0.2));
     }
@@ -402,7 +416,7 @@ void draw_inventory()
         int x = item % 7;
         int y = floor(item / 7.0);
 
-        Vector2 pos = (Vector2){30 + x * 80, 430 + y * 100};
+        Vector2 pos = (Vector2){30 + x * 80, 480 + y * 100};
 
         bool mouse_inside = false;
         if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
@@ -507,8 +521,7 @@ void draw_inventory()
         {
             _description = _shield_inventory[shield].description;
 
-            if (!_item_hand.active && !_shield_hand.active && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1 &&
-                _shield_inventory[shield].health > 0)
+            if (!_item_hand.active && !_shield_hand.active && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1)
             {
                 printf("clicked shield!\n");
                 //pick up shield
@@ -588,6 +601,8 @@ void Battle_Frame()
 
         pos.x += shake_manager(&_shake_timer);
 
+        add_shadow(pos, 0.7, true);
+
         _lastPosition = pos;
 
         drawCircle(pos.x, pos.y, 30, WHITE);
@@ -618,12 +633,14 @@ void Battle_Frame()
         if (!_enemies[enemy].active)
             continue;
         
-        
+        Vector2 pos = CalculateEnemyPosition(_enemies[enemy].lane, postition[_enemies[enemy].lane]);
+
+        if (_enemy_empowered == enemy)
+            drawCircle(pos.x+25, pos.y+25, 30, ColorAlpha(SKYBLUE, 0.4));
+
         _enemies[enemy].render(&_enemies[enemy], postition[_enemies[enemy].lane]);
         
         postition[_enemies[enemy].lane]++;
-
-        Vector2 pos = CalculateEnemyPosition(_enemies[enemy].lane, 0);
 
         {
             if (pos.x - 50 < getMouseX() && getMouseX() < pos.x + 50)
@@ -666,7 +683,7 @@ void Battle_Frame()
     {
         Vector2 pos = CalculateEnemyPosition(lane, -2);
 
-        pos.y += 20;
+        pos.y += 40;
 
         if(_shield_lanes[lane].active)
         {
@@ -689,7 +706,7 @@ void Battle_Frame()
             {
                 if (pos.y - 15 < getMouseY() && pos.y + 15 > getMouseY())
                 {
-                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _shield_hand.active && !_shield_lanes[lane].active && _turn == -1)
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _shield_hand.active && _shield_hand.health > 0 && !_shield_lanes[lane].active && _turn == -1)
                     {
                         _shield_lanes[lane] = _shield_hand;
                         _shield_hand.active = false;
