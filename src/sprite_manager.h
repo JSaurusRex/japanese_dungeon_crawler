@@ -5,6 +5,7 @@
 
 extern Texture2D _sprite_shield1;
 extern Texture2D _sprite_shadow;
+extern Texture2D _sprite_shadow_perspective;
 extern Texture2D _next_level_screen;
 extern Texture2D _gameover_screen;
 extern Texture2D _hub_screen;

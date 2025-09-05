@@ -18,7 +18,7 @@
 void Goblin1Render(sEnemy * self, int position)
 {
     Vector2 pos = CalculateEnemyPosition(self->lane, position);
-    add_shadow((Vector2){pos.x+23, pos.y+50}, 0.8);
+    add_shadow((Vector2){pos.x+23, pos.y+50}, 0.8, true);
 
     pos.x += shake_manager(&self->shake_timer);
 

@@ -538,12 +538,14 @@ void draw_items_UI()
     //draw dragged items
     if (_item_hand.active && _item_hand.render)
     {
+        add_shadow(Vector2Add(getMousePosition(), (Vector2){25, 25}), 0.8, false);
         _item_hand.render(&_item_hand, getMousePosition());
     }
 
     //draw dragged shield
     if (_shield_hand.active && _shield_hand.render)
     {
+        add_shadow(Vector2Add(getMousePosition(), (Vector2){25, 25}), 0.8, false);
         _shield_hand.render(&_shield_hand, getMousePosition());
     }
 
@@ -668,7 +670,7 @@ void Battle_Frame()
 
         if(_shield_lanes[lane].active)
         {
-            add_shadow((Vector2){pos.x, pos.y + 20}, 0.7);
+            add_shadow((Vector2){pos.x, pos.y + 20}, 0.7, true);
             _shield_lanes[lane].render(&_shield_lanes[lane], (Vector2){pos.x - 25, pos.y - 25});
 
             //draw health numbers
