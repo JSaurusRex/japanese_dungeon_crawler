@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "rendering.h"
 #include <math.h>
 
 #include "main.h"
@@ -132,12 +133,12 @@ void GameOver_item_result_Frame()
     if (_answers_incorrect >= _quiz_hearts)
     {
         ClearBackground(RED);
-        DrawTextEx(_fontJapanese, "You lost the item", (Vector2){ 240, 200 }, 70, 2, WHITE);
+        drawTextEx(_fontJapanese, "You lost the item", (Vector2){ 240, 200 }, 70, 2, WHITE);
     }
     else
     {
         ClearBackground(GREEN);
-        DrawTextEx(_fontJapanese, "You kept the item!", (Vector2){ 240, 200 }, 70, 2, WHITE);
+        drawTextEx(_fontJapanese, "You kept the item!", (Vector2){ 240, 200 }, 70, 2, WHITE);
     }
 
     if(_gameover_kept_item)
@@ -153,13 +154,13 @@ void GameOver_item_result_Frame()
     //next button
     {
         Vector2 pos = (Vector2){ 640, 100};
-        DrawTextEx(_fontJapanese, "next", pos, 30, 2, WHITE);
+        drawTextEx(_fontJapanese, "next", pos, 30, 2, WHITE);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (pos.x < GetMouseX() && pos.x + 80 > GetMouseX())
+            if (pos.x < getMouseX() && pos.x + 80 > getMouseX())
             {
-                if(pos.y < GetMouseY() && pos.y + 40 > GetMouseY())
+                if(pos.y < getMouseY() && pos.y + 40 > getMouseY())
                 {
                     Start_quiz_for_item();
                 }
@@ -192,10 +193,10 @@ void GameOver_item_result()
 void GameOver_Frame()
 {
     _turn = -1;
-    DrawTexture(_gameover_screen, 0, 0, WHITE);
+    drawTexture(_gameover_screen, 0, 0, WHITE);
 
-    DrawTextEx(_fontJapanese, "GameOver", (Vector2){ 240, 20 }, 70, 2, WHITE);
-    DrawTextEx(_fontJapanese, "You can keep a few items for next game", (Vector2){ 160, 100 }, 20, 2, WHITE);
+    drawTextEx(_fontJapanese, "GameOver", (Vector2){ 240, 20 }, 70, 2, WHITE);
+    drawTextEx(_fontJapanese, "You can keep a few items for next game", (Vector2){ 160, 100 }, 20, 2, WHITE);
 
     for(int item = 0; item < MAX_EXIT_ITEMS; item++)
     {
@@ -204,12 +205,12 @@ void GameOver_Frame()
 
         Vector2 pos = (Vector2){150 + x * 80, 200 + y * 100};
 
-        DrawCircle(pos.x + 25, pos.y + 25, 40, ColorAlpha(BLACK, 0.3));
+        drawCircle(pos.x + 25, pos.y + 25, 40, ColorAlpha(BLACK, 0.3));
 
         bool mouse_inside = false;
-        if (pos.x < GetMouseX() && GetMouseX() < pos.x + 50)
+        if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
         {
-            if (pos.y < GetMouseY() && GetMouseY() < pos.y + 50)
+            if (pos.y < getMouseY() && getMouseY() < pos.y + 50)
             {
                 mouse_inside = true;
             }
@@ -257,12 +258,12 @@ void GameOver_Frame()
     {
         Vector2 pos = (Vector2){450 + shield * 80, 200};
 
-        DrawCircle(pos.x+25, pos.y+25, 10, YELLOW);
+        drawCircle(pos.x+25, pos.y+25, 10, YELLOW);
 
         bool mouse_inside = false;
-        if (pos.x < GetMouseX() && GetMouseX() < pos.x + 50)
+        if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
         {
-            if (pos.y < GetMouseY() && GetMouseY() < pos.y + 50)
+            if (pos.y < getMouseY() && getMouseY() < pos.y + 50)
             {
                 mouse_inside = true;
             }
@@ -293,19 +294,19 @@ void GameOver_Frame()
     //draw description
     if (_description)
     {
-        DrawTextEx(_fontJapanese, _description, (Vector2){638, 385}, 19, 2, WHITE);
+        drawTextEx(_fontJapanese, _description, (Vector2){638, 385}, 19, 2, WHITE);
     }
 
     //exit button
     {
         Vector2 pos = (Vector2){ 640, 100};
-        DrawTextEx(_fontJapanese, "exit", pos, 30, 2, WHITE);
+        drawTextEx(_fontJapanese, "exit", pos, 30, 2, WHITE);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (pos.x < GetMouseX() && pos.x + 80 > GetMouseX())
+            if (pos.x < getMouseX() && pos.x + 80 > getMouseX())
             {
-                if(pos.y < GetMouseY() && pos.y + 40 > GetMouseY())
+                if(pos.y < getMouseY() && pos.y + 40 > getMouseY())
                 {
                     printf("Exited to main lobby!\n");
                     _exit_item_index = -1;

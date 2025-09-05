@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "rendering.h"
 #include <raymath.h>
 #include <math.h>
 
@@ -28,7 +29,7 @@ sShield _loot_shields[LOOT_SHIELDS_MAX] = {0};
 
 void next_level_frame()
 {
-    DrawTexture(_next_level_screen, 0, 0, WHITE);
+    drawTexture(_next_level_screen, 0, 0, WHITE);
 
     draw_inventory();
 
@@ -39,12 +40,12 @@ void next_level_frame()
 
         Vector2 pos = (Vector2){150 + x * 80, 200 + y * 100};
 
-        DrawCircle(pos.x + 25, pos.y + 25, 40, ColorAlpha(BLACK, 0.3));
+        drawCircle(pos.x + 25, pos.y + 25, 40, ColorAlpha(BLACK, 0.3));
 
         bool mouse_inside = false;
-        if (pos.x < GetMouseX() && GetMouseX() < pos.x + 50)
+        if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
         {
-            if (pos.y < GetMouseY() && GetMouseY() < pos.y + 50)
+            if (pos.y < getMouseY() && getMouseY() < pos.y + 50)
             {
                 mouse_inside = true;
             }
@@ -92,12 +93,12 @@ void next_level_frame()
     {
         Vector2 pos = (Vector2){150 + shield * 80, 100};
 
-        DrawCircle(pos.x+25, pos.y+25, 10, YELLOW);
+        drawCircle(pos.x+25, pos.y+25, 10, YELLOW);
 
         bool mouse_inside = false;
-        if (pos.x < GetMouseX() && GetMouseX() < pos.x + 50)
+        if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
         {
-            if (pos.y < GetMouseY() && GetMouseY() < pos.y + 50)
+            if (pos.y < getMouseY() && getMouseY() < pos.y + 50)
             {
                 mouse_inside = true;
             }
@@ -128,19 +129,19 @@ void next_level_frame()
     //draw description
     if (_description)
     {
-        DrawTextEx(_fontJapanese, _description, (Vector2){638, 385}, 19, 2, WHITE);
+        drawTextEx(_fontJapanese, _description, (Vector2){638, 385}, 19, 2, WHITE);
     }
 
     //next level button
     {
         Vector2 pos = (Vector2){ 120, 10 };
-        DrawTextEx(_fontJapanese, "next level", pos, 30, 2, BLACK);
+        drawTextEx(_fontJapanese, "next level", pos, 30, 2, BLACK);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (pos.x < GetMouseX() && pos.x + 80 > GetMouseX())
+            if (pos.x < getMouseX() && pos.x + 80 > getMouseX())
             {
-                if(pos.y < GetMouseY() && pos.y + 40 > GetMouseY())
+                if(pos.y < getMouseY() && pos.y + 40 > getMouseY())
                 {
                     printf("pressed next level!\n");
                     _level++;
@@ -156,7 +157,7 @@ void next_level_frame()
         Vector2 pos = (Vector2){ 350, 10 };
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "completed level %i\npick your loot", _level);
-        DrawTextEx(_fontJapanese, str, pos, 30, 2, BLACK);
+        drawTextEx(_fontJapanese, str, pos, 30, 2, BLACK);
     }
 
     draw_items_UI();

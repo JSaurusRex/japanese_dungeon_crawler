@@ -30,6 +30,9 @@
         "sword1.h": "c",
         "sprite_manager.h": "c",
         "fire_wand1.h": "c",
-        "healing_potion.h": "c"
+        "healing_potion.h": "c",
+        "math.h": "c",
+        "rendering.h": "c",
+        "raylib.h": "c"
     }
 }

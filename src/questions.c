@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "rendering.h"
 #include <raymath.h>
 #include <math.h>
 
@@ -184,53 +185,53 @@ void QuestionsFrame()
         {
             char str[16];
             snprintf(str, 16, "%i/%i", _answer_counter, _answers_amount);
-            DrawTextEx(_fontJapanese, str, (Vector2){ 50, 50 }, 30, 2, BLACK);
+            drawTextEx(_fontJapanese, str, (Vector2){ 50, 50 }, 30, 2, BLACK);
         }
 
         //combo
         {
             char str[16];
             snprintf(str, 16, "combo %i", _combo);
-            DrawTextEx(_fontJapanese, str, (Vector2){ 600, 15 }, 50, 2, BLACK);
+            drawTextEx(_fontJapanese, str, (Vector2){ 600, 15 }, 50, 2, BLACK);
         }
 
         //hearts
         for(int i = 0; i < _quiz_hearts-_answers_incorrect; i++)
         {
-            DrawRectangle(50 + i * 50, 90, 30, 30, RED);
+            drawRectangle(50 + i * 50, 90, 30, 30, RED);
         }
 
         //question
-        DrawTextEx(_fontJapanese, _question.japanese, (Vector2){ 400, 100 }, 50, 2, BLACK);
+        drawTextEx(_fontJapanese, _question.japanese, (Vector2){ 400, 100 }, 50, 2, BLACK);
 
         //input
-        DrawRectangle(280, 195, 300, 60, ColorAlpha(YELLOW, 0.5));
-        DrawTextEx(_fontJapanese, _input_str, (Vector2){ 300, 200 }, 50, 2, BLACK);
+        drawRectangle(280, 195, 300, 60, ColorAlpha(YELLOW, 0.5));
+        drawTextEx(_fontJapanese, _input_str, (Vector2){ 300, 200 }, 50, 2, BLACK);
 
         //romaji or english
 
         if (_questionType == ROMAJI)
-            DrawTextEx(_fontJapanese, "ROMAJI", (Vector2){ 30, 200 }, 50, 2, BLACK);
+            drawTextEx(_fontJapanese, "ROMAJI", (Vector2){ 30, 200 }, 50, 2, BLACK);
         else
-            DrawTextEx(_fontJapanese, "ENGLISH", (Vector2){ 30, 200 }, 50, 2, BLACK);
+            drawTextEx(_fontJapanese, "ENGLISH", (Vector2){ 30, 200 }, 50, 2, BLACK);
         
         //draw answer
         if (_show_answer)
         {
             if (_questionType == ROMAJI)
             {
-                DrawTextEx(_fontJapanese, _question.romaji, (Vector2){ 400, 150 }, 50, 2, BLACK);
-                DrawTextEx(_fontJapanese, _question.english, (Vector2){ 400, 250 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 400, 150 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.english, (Vector2){ 400, 250 }, 50, 2, BLACK);
             }
             else
             {
-                DrawTextEx(_fontJapanese, _question.english, (Vector2){ 400, 150 }, 50, 2, BLACK);
-                DrawTextEx(_fontJapanese, _question.romaji, (Vector2){ 400, 250 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.english, (Vector2){ 400, 150 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 400, 250 }, 50, 2, BLACK);
             }
         }
 
         if (_answers_incorrect == 0)
-            DrawTextEx(_fontJapanese, "Perfect!", (Vector2){ 320, 15 }, 50, 2, GOLD);
+            drawTextEx(_fontJapanese, "Perfect!", (Vector2){ 320, 15 }, 50, 2, GOLD);
 
         //render all answers
         if (_questionType == ENGLISH && !_show_answer)
@@ -240,7 +241,7 @@ void QuestionsFrame()
             {
                 if(_input_str_cursor == -1 || strstr(_all_questions[i].english, _input_str))
                 {
-                    DrawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 400, 250 + shown * 40 }, 35, 2, BLACK);
+                    drawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 400, 250 + shown * 40 }, 35, 2, BLACK);
                     shown++;
                 }
             }

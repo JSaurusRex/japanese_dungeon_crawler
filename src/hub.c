@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "rendering.h"
 #include <math.h>
 
 #include "main.h"
@@ -15,18 +16,18 @@
 
 void hub_frame()
 {
-    DrawTexture(_hub_screen, 0, 0, WHITE);
+    drawTexture(_hub_screen, 0, 0, WHITE);
 
     //enter button
     {
         Vector2 pos = (Vector2){ 640, 100};
-        DrawTextEx(_fontJapanese, "enter", pos, 30, 2, BLACK);
+        drawTextEx(_fontJapanese, "enter", pos, 30, 2, BLACK);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (pos.x < GetMouseX() && pos.x + 80 > GetMouseX())
+            if (pos.x < getMouseX() && pos.x + 80 > getMouseX())
             {
-                if(pos.y < GetMouseY() && pos.y + 40 > GetMouseY())
+                if(pos.y < getMouseY() && pos.y + 40 > getMouseY())
                 {
                     printf("entered!\n");
                     Battle_Reset();

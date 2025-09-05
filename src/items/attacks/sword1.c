@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "../../rendering.h"
 #include <math.h>
 
 #include "../../battle.h"
@@ -31,7 +32,7 @@ sItem _prefab_sword1 = {
 
 void sword1_render(sItem * self, Vector2 position)
 {
-    DrawTexture(_sword1_sprite, position.x, position.y, WHITE);
+    drawTexture(_sword1_sprite, position.x, position.y, WHITE);
 }
 
 void sword1_effect_enemy_finish()

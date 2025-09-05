@@ -22,6 +22,7 @@ void EmptyScreen();
 
 void main() {
     SetWindowState(FLAG_MSAA_4X_HINT);
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
     InitWindow(800, 600, "Japanese text test");
     srand(time(NULL));
 

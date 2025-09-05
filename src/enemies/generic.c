@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include <raylib.h>
+#include "../rendering.h"
 #include <raymath.h>
 
 #include "../battle.h"

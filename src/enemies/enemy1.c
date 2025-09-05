@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "../rendering.h"
 #include <math.h>
 
 #include "../battle.h"
@@ -27,7 +28,7 @@ void EnemyRender(sEnemy * self, int position)
 
     pos.x -= move_forward_animation(self->attack_animation_timer, 80);
 
-    DrawRectangle(pos.x, pos.y, 50, 50, BROWN);
+    drawRectangle(pos.x, pos.y, 50, 50, BROWN);
     self->lastPosition = pos;
 }
 

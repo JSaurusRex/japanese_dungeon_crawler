@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "../rendering.h"
 #include <raymath.h>
 #include <math.h>
 
@@ -29,7 +30,7 @@ void Goblin1Render(sEnemy * self, int position)
 
     pos.x -= move_forward_animation(self->attack_animation_timer, 80);
 
-    DrawTexture(_goblin1_sprite, pos.x, pos.y, WHITE);
+    drawTexture(_goblin1_sprite, pos.x, pos.y, WHITE);
     self->lastPosition = pos;
 }
 

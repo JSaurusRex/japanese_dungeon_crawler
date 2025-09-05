@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "../rendering.h"
 #include <math.h>
 
 #include "../battle.h"
@@ -28,7 +29,7 @@ sItem _prefab_item_enhancer = {
 
 void Item_enhancer_renderer(sItem * self, Vector2 position)
 {
-    DrawRectangle(position.x, position.y, 50, 50, GRAY);
+    drawRectangle(position.x, position.y, 50, 50, GRAY);
 }
 
 void Item_enhancer_effect(sItem * self, sItem * pItem)

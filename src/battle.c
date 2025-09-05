@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "rendering.h"
 #include <raymath.h>
 #include <math.h>
 
@@ -352,20 +353,20 @@ void try_return_item()
 void draw_item(Vector2 pos, sItem * pItem)
 {
     if (pItem->enhanced > 0)
-        DrawCircle(pos.x+25, pos.y+25, 30, GOLD);
+        drawCircle(pos.x+25, pos.y+25, 30, GOLD);
 
     if (pItem->render)
         pItem->render(pItem, pos);
     
     if (pItem->rounds_disabled > 0 || pItem->energy > _energy)
     {
-        DrawCircle(pos.x+25, pos.y+25, 35, ColorAlpha(BLACK, 0.4));
+        drawCircle(pos.x+25, pos.y+25, 35, ColorAlpha(BLACK, 0.4));
 
         if (pItem->rounds_disabled > 0)
         {
             char str[STRING_LENGTH];
             snprintf(str, STRING_LENGTH, "%i", pItem->rounds_disabled);
-            DrawTextEx(_fontJapanese, str, (Vector2){ pos.x - 10, pos.y - 10 }, 20, 2, WHITE);
+            drawTextEx(_fontJapanese, str, (Vector2){ pos.x - 10, pos.y - 10 }, 20, 2, WHITE);
         }
     }
     
@@ -373,14 +374,14 @@ void draw_item(Vector2 pos, sItem * pItem)
     {
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "lvl: %i", pItem->level);
-        DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40 }, 20, 2, WHITE);
+        drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40 }, 20, 2, WHITE);
     }
 
     //draw energy numbers
     {
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "e: %i", pItem->energy);
-        DrawTextEx(_fontJapanese, str, (Vector2){ pos.x + 10, pos.y + 50 }, 20, 2, WHITE);
+        drawTextEx(_fontJapanese, str, (Vector2){ pos.x + 10, pos.y + 50 }, 20, 2, WHITE);
     }
 }
 
@@ -393,7 +394,7 @@ void draw_inventory()
 
         Vector2 pos = (Vector2){30 + x * 80, 430 + y * 100};
 
-        DrawRectangle(pos.x - 10, pos.y - 10, 75, 75, ColorAlpha(BLACK, 0.2));
+        drawRectangle(pos.x - 10, pos.y - 10, 75, 75, ColorAlpha(BLACK, 0.2));
     }
 
     for(int item = 0; item < MAX_ITEMS; item++)
@@ -404,9 +405,9 @@ void draw_inventory()
         Vector2 pos = (Vector2){30 + x * 80, 430 + y * 100};
 
         bool mouse_inside = false;
-        if (pos.x < GetMouseX() && GetMouseX() < pos.x + 50)
+        if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
         {
-            if (pos.y < GetMouseY() && GetMouseY() < pos.y + 50)
+            if (pos.y < getMouseY() && getMouseY() < pos.y + 50)
             {
                 mouse_inside = true;
             }
@@ -423,7 +424,7 @@ void draw_inventory()
 
             if (_disabled_slot == item)
             {
-                DrawTexture(_disabled_slot_sprite, pos.x-10, pos.y-10, WHITE);
+                drawTexture(_disabled_slot_sprite, pos.x-10, pos.y-10, WHITE);
             }
 
             continue;
@@ -434,7 +435,7 @@ void draw_inventory()
         
         if (_disabled_slot == item)
         {
-            DrawTexture(_disabled_slot_sprite, pos.x-10, pos.y-10, WHITE);
+            drawTexture(_disabled_slot_sprite, pos.x-10, pos.y-10, WHITE);
         }
 
         //item input / mouse behaviour
@@ -466,9 +467,9 @@ void draw_inventory()
         Vector2 pos = (Vector2){20, 10 + shield * 80};
 
         bool mouse_inside = false;
-        if (pos.x < GetMouseX() && GetMouseX() < pos.x + 50)
+        if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
         {
-            if (pos.y < GetMouseY() && GetMouseY() < pos.y + 50)
+            if (pos.y < getMouseY() && getMouseY() < pos.y + 50)
             {
                 mouse_inside = true;
             }
@@ -479,7 +480,7 @@ void draw_inventory()
 
         if (!_shield_inventory[shield].active)
         {
-            DrawCircle(pos.x+25, pos.y+25, 15, YELLOW);
+            drawCircle(pos.x+25, pos.y+25, 15, YELLOW);
 
             if (interactable && mouse_inside && _shield_hand.active)
             {
@@ -498,7 +499,7 @@ void draw_inventory()
         {
             char str[STRING_LENGTH];
             snprintf(str, STRING_LENGTH, "hp: %.0f", _shield_inventory[shield].health);
-            DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
+            drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
         }
         
         //shield input / mouse behaviour
@@ -531,19 +532,19 @@ void draw_items_UI()
     //draw description
     if (_description)
     {
-        DrawTextEx(_fontJapanese, _description, (Vector2){638, 385}, 19, 2, WHITE);
+        drawTextEx(_fontJapanese, _description, (Vector2){638, 385}, 19, 2, WHITE);
     }
 
     //draw dragged items
     if (_item_hand.active && _item_hand.render)
     {
-        _item_hand.render(&_item_hand, GetMousePosition());
+        _item_hand.render(&_item_hand, getMousePosition());
     }
 
     //draw dragged shield
     if (_shield_hand.active && _shield_hand.render)
     {
-        _shield_hand.render(&_shield_hand, GetMousePosition());
+        _shield_hand.render(&_shield_hand, getMousePosition());
     }
 
     //drop item with right mouse click
@@ -575,7 +576,7 @@ void Battle_Frame()
             do_next_turn();
     }
 
-    DrawTexture(_battle_screen_texture, 0, 0, WHITE);
+    drawTexture(_battle_screen_texture, 0, 0, WHITE);
     render_shadows();
 
     // render player
@@ -587,12 +588,12 @@ void Battle_Frame()
 
         _lastPosition = pos;
 
-        DrawCircle(pos.x, pos.y, 30, WHITE);
+        drawCircle(pos.x, pos.y, 30, WHITE);
 
 
-        if (pos.x - 15 < GetMouseX() && GetMouseX() < pos.x + 15)
+        if (pos.x - 15 < getMouseX() && getMouseX() < pos.x + 15)
         {
-            if (pos.y - 15 < GetMouseY() && GetMouseY() < pos.y + 15)
+            if (pos.y - 15 < getMouseY() && getMouseY() < pos.y + 15)
             {
                 _description = "player";
 
@@ -623,9 +624,9 @@ void Battle_Frame()
         Vector2 pos = CalculateEnemyPosition(_enemies[enemy].lane, 0);
 
         {
-            if (pos.x - 50 < GetMouseX() && GetMouseX() < pos.x + 50)
+            if (pos.x - 50 < getMouseX() && getMouseX() < pos.x + 50)
             {
-                if (pos.y - 50 < GetMouseY() && GetMouseY() < pos.y + 50)
+                if (pos.y - 50 < getMouseY() && getMouseY() < pos.y + 50)
                 {
                     _description = _enemies[enemy].description;
 
@@ -652,7 +653,7 @@ void Battle_Frame()
         //draw health numbers
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "hp: %.0f", _enemies[enemy].health);
-        DrawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
+        drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 50 }, 20, 2, WHITE);
     }
 
     //draw inventory
@@ -674,17 +675,17 @@ void Battle_Frame()
             {
                 char str[STRING_LENGTH];
                 snprintf(str, STRING_LENGTH, "hp:%.0f", _shield_lanes[lane].health);
-                DrawTextEx(_fontJapanese, str, (Vector2){ pos.x - 50, pos.y }, 20, 2, WHITE);
+                drawTextEx(_fontJapanese, str, (Vector2){ pos.x - 50, pos.y }, 20, 2, WHITE);
             }
             
         }
         else
-            DrawCircle(pos.x, pos.y, 15, YELLOW);
+            drawCircle(pos.x, pos.y, 15, YELLOW);
 
         {
-            if (pos.x - 15 < GetMouseX() && pos.x + 15 > GetMouseX())
+            if (pos.x - 15 < getMouseX() && pos.x + 15 > getMouseX())
             {
-                if (pos.y - 15 < GetMouseY() && pos.y + 15 > GetMouseY())
+                if (pos.y - 15 < getMouseY() && pos.y + 15 > getMouseY())
                 {
                     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _shield_hand.active && !_shield_lanes[lane].active && _turn == -1)
                     {
@@ -715,13 +716,13 @@ void Battle_Frame()
     if (_turn == -1)
     {
         Vector2 pos = (Vector2){ 300, 10 };
-        DrawTextEx(_fontJapanese, "end turn", pos, 30, 2, WHITE);
+        drawTextEx(_fontJapanese, "end turn", pos, 30, 2, WHITE);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
-            if (pos.x < GetMouseX() && pos.x + 80 > GetMouseX())
+            if (pos.x < getMouseX() && pos.x + 80 > getMouseX())
             {
-                if(pos.y < GetMouseY() && pos.y + 40 > GetMouseY())
+                if(pos.y < getMouseY() && pos.y + 40 > getMouseY())
                 {
                     printf("pressed end turn!\n");
                     next_turn();
@@ -734,14 +735,14 @@ void Battle_Frame()
     {
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "Health: %i\nEnergy: %i/%i", (int)_health, _energy, _max_energy);
-        DrawTextEx(_fontJapanese, str, (Vector2){ 120, 10 }, 30, 2, WHITE);
+        drawTextEx(_fontJapanese, str, (Vector2){ 120, 10 }, 30, 2, WHITE);
     }
 
     //draw level number
     {
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "Level: %i", _level);
-        DrawTextEx(_fontJapanese, str, (Vector2){ 590, 10 }, 60, 2, WHITE);
+        drawTextEx(_fontJapanese, str, (Vector2){ 590, 10 }, 60, 2, WHITE);
     }
 
     draw_items_UI();

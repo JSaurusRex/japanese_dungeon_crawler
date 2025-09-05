@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "rendering.h"
 #include <raymath.h>
 #include <math.h>
 
@@ -114,13 +115,13 @@ void draw_particles()
         {
             case PARTICLE_DUST:
             {
-                DrawCircle(_particles[i].position.x, _particles[i].position.y, 5, ColorAlpha(GRAY, 0.4));
+                drawCircle(_particles[i].position.x, _particles[i].position.y, 5, ColorAlpha(GRAY, 0.4));
                 break;
             }
 
             case PARTICLE_BLOOD:
             {
-                DrawCircle(_particles[i].position.x, _particles[i].position.y, 5, ColorAlpha(RED, 0.5));
+                drawCircle(_particles[i].position.x, _particles[i].position.y, 5, ColorAlpha(RED, 0.5));
                 break;
             }
         }
@@ -245,6 +246,6 @@ void draw_damage_number_particles()
 
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "%i", _damage_number_particles[i].amount);
-        DrawText(str, _damage_number_particles[i].position.x, _damage_number_particles[i].position.y, 14, color);
+        drawText(str, _damage_number_particles[i].position.x, _damage_number_particles[i].position.y, 14, color);
     }
 }

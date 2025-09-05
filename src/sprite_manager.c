@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <raylib.h>
+#include "rendering.h"
 
 
 Texture2D _sprite_shield1;

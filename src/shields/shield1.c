@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <raylib.h>
+#include "../rendering.h"
 #include <math.h>
 
 #include "../battle.h"
@@ -36,8 +37,8 @@ void ShieldRender(sShield * self, Vector2 position)
 
     if (self->shake_timer > 0)
         position.x += sin(self->shake_timer * 40) * 10 * self->shake_timer;
-    // DrawRectangle(position.x, position.y, 50, 50, DARKGRAY);
-    DrawTextureEx(_sprite_shield1, position, 0, 0.1, WHITE);
+    // drawRectangle(position.x, position.y, 50, 50, DARKGRAY);
+    drawTextureEx(_sprite_shield1, position, 0, 0.1, WHITE);
     self->lastPosition = position;
 }
 
