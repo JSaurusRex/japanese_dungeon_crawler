@@ -20,6 +20,7 @@
 #include "items/healing_potion.h"
 #include "items/energy_potion.h"
 #include "shields/shield1.h"
+#include "items/upgrade_item.h"
 
 #define LOOT_MAX 14
 #define LOOT_SHIELDS_MAX 7
@@ -257,10 +258,11 @@ void next_level_generate()
                 {&_prefab_sword1, 0, 0.2},
                 {&_prefab_firewand1, 0, 0.2},
                 {0, &_prefab_shield1, 0.5},
-                {&_prefab_shield_repair_item, 0, 0.5}
+                {&_prefab_shield_repair_item, 0, 0.5},
+                {&_prefab_upgrade_item, 0, 7}
             };
 
-            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), rand() % 3);
+            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), rand() % 5);
             break;
         }
     }
