@@ -15,7 +15,7 @@
 void sword1_render(sItem * self, Vector2 position);
 void sword1_effect_enemy(sItem * self, sEnemy * pEnemy);
 
-char sword1_description [] = "Testing Item\nConsumes 35 energy\ndeals 5";
+char sword1_description [] = "Sword\nConsumes 35 energy\ndeals 5";
 
 sItem _prefab_sword1 = {
     .active = true,

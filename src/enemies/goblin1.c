@@ -42,13 +42,16 @@ void Goblin1Turn(sEnemy * self)
 
 void Goblin1TakeDamage(sEnemy * self, float damage, Element element)
 {
+    if (element == ELEMENT_FIRE)
+        damage *= 1.4;
+    
     if (_printDebug)
         printf("debug: EnemyTakeDamage: enemy took %.2f damage\n", damage);
 
     apply_damage_enemy(self, element, damage);
 }
 
-char goblin1_description[] = "goblin1\n10 health\nDeals 20 dmg";
+char goblin1_description[] = "goblin1\n10 health\nDeals 20 dmg\nWeak to Fire";
 
 sEnemy _prefab_goblin1 = {
     .active = true,

@@ -12,7 +12,7 @@
 void Healing_potion_renderer(sItem * self, Vector2 position);
 void Healing_potion_effect_player(sItem * self);
 
-char healing_potion_description [] = "Shield repair item\nConsumes 15 energy\nrepairs up to 50";
+char healing_potion_description [] = "healing potion\nConsumes 15 energy\nHeals up to 40";
 
 sItem _prefab_healing_potion = {
     .active = true,

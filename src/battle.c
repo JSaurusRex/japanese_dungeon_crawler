@@ -59,7 +59,7 @@ float _battle_timer = 0;
 
 Vector2 CalculateEnemyPosition(int lane, int position)
 {
-    float walk_in_animation = Remap(powf(fmin(_battle_timer / 2.0 - lane - position * 3, 1), 0.3), 0, 1, 500, 0);
+    float walk_in_animation = Remap(powf(fmin(_battle_timer / 2.0 - lane - position * 1.2, 1), 0.3), 0, 1, 500, 0);
     return (Vector2){500 + walk_in_animation + position * 80 + lane * 10, 240 + lane * 50};
 }
 
@@ -272,6 +272,7 @@ void Battle_Start()
 {
     _battle_timer = 0;
     _screen = &Battle_Frame;
+    _turn_breather = 0;
     // _enemies[0] = _prefab_enemy1;
     // _enemies[1] = _prefab_goblin1;
     // _enemies[1].lane = 1;
@@ -279,7 +280,7 @@ void Battle_Start()
 
     _disabled_slot = rand() % MAX_ITEMS;
 
-    _energy = 50;
+    _energy = _max_energy;
     _turn = -1;
 }
 

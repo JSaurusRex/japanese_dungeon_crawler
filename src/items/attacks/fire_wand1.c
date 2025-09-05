@@ -15,7 +15,7 @@
 void firewand1_render(sItem * self, Vector2 position);
 void firewand1_effect_enemy(sItem * self, sEnemy * pEnemy);
 
-char firewand1_description [] = "Testing Item\nConsumes 35 energy\ndeals 5";
+char firewand1_description [] = "FireWand\nConsumes 35 energy\nDeals 5";
 
 sItem _prefab_firewand1 = {
     .active = true,
@@ -37,7 +37,7 @@ void firewand1_render(sItem * self, Vector2 position)
 void firewand1_effect_enemy_finish()
 {
     if (quiz_succeeded())
-        _pEnemy->takeDamage(_pEnemy, 5 * damage_factor_calc(40, 30, 1.2), ELEMENT_NONE);
+        _pEnemy->takeDamage(_pEnemy, 5 * damage_factor_calc(40, 30, 1.2), ELEMENT_FIRE);
 
     _screen = &Battle_Frame;
     try_return_item();
