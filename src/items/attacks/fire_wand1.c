@@ -40,7 +40,7 @@ void CHANGE_NAME(render)(sItem * self, Vector2 position)
 void CHANGE_NAME(effect_enemy_finish)()
 {
     if (quiz_succeeded())
-        _pEnemy->takeDamage(_pEnemy, 5 * _pItem->level * damage_factor_calc(40, 30, 1.2), ELEMENT_FIRE);
+        _pEnemy->takeDamage(_pEnemy, 5 * damage_factor_calc(40, 30, 1.2), ELEMENT_FIRE);
 
     change_screen(&Battle_Frame);
     try_return_item();

@@ -185,7 +185,12 @@ void QuestionsFrame()
 
     //rendering
     {
-        ClearBackground(ColorLerp(RAYWHITE, FeedbackColor, powf(_feedback_alpha, 2.0)));
+        Color background_color = RAYWHITE;
+        
+        if (_answerType == ROMAJI)
+            background_color = ColorLerp(RAYWHITE, YELLOW, 0.2);
+
+        ClearBackground(ColorLerp(background_color, FeedbackColor, powf(_feedback_alpha, 2.0)));
         
         if (!_show_answer)
         {
@@ -237,7 +242,7 @@ void QuestionsFrame()
         if ((int)(cursor_timer * 2) % 2 == 0)
         {
             Vector2 v = MeasureTextEx(_fontJapanese, _input_str, 45, 2);
-            drawRectangle(300 + v.x, 200, 5, 45, BLACK);
+            drawRectangle(300 + v.x * 0.8, 200, 5, 45, BLACK);
         }
 
         //romaji or english
@@ -418,14 +423,14 @@ bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
 
     _questionType = rand() % (KANA + 1);
 
-    if (question->japanese[0] == 0)
+    if (question->kana[0] == 0)
     {
         if(_printDebug)
             printf("only japanese\n");
         _questionType = KANJI;
     }
     
-    if (question->kana[0] == 0)
+    if (question->japanese[0] == 0)
     {
         if(_printDebug)
             printf("only kana\n");

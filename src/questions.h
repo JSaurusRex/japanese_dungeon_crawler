@@ -17,6 +17,7 @@ extern int _answers_incorrect;
 extern int _answers_amount;
 extern int _combo;
 extern int _question_effectiveness;
+extern int _pack_level;
 
 bool Questions_init();
 void Start_Questions(int amount, int hearts, char * pack, int level, void (*callback)());

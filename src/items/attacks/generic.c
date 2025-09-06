@@ -29,6 +29,8 @@ float damage_factor_calc(unsigned int random_variance_percent, int crit_percent,
     damage_factor *= _question_effectiveness / (float)_answers_amount;
     
     damage_factor *= (1+_combo * 0.02);
+
+    damage_factor *= (1 + (_pack_level - 1) * 0.4);
     
     return damage_factor;
 }
