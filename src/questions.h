@@ -8,6 +8,7 @@ typedef struct
     char japanese[STRING_LENGTH];
     char english[STRING_LENGTH];
     char romaji[STRING_LENGTH];
+    char kana[STRING_LENGTH];
     int level;
 } sQuestion;
 

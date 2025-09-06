@@ -101,7 +101,7 @@ void next_level_frame()
     {
         Vector2 pos = (Vector2){150 + shield * 80, 100};
 
-        drawCircle(pos.x+25, pos.y+25, 10, YELLOW);
+        drawCircle(pos.x+25, pos.y+25, 10, ColorAlpha(WHITE, 0.3));
 
         bool mouse_inside = false;
         if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
@@ -131,7 +131,7 @@ void next_level_frame()
         {
             char str[STRING_LENGTH];
             snprintf(str, STRING_LENGTH, "hp:%.0f", _loot_shields[shield].health);
-            drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40}, 20, 2, WHITE);
+            drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40}, 20, 2, WHITE, true);
         }
         
         if (interactable && mouse_inside && !_shield_hand.active)
@@ -144,7 +144,7 @@ void next_level_frame()
     //next level button
     {
         Vector2 pos = (Vector2){ 120, 10 };
-        drawTextEx(_fontJapanese, "next level", pos, 30, 2, BLACK);
+        drawTextEx(_fontJapanese, "next level", pos, 30, 2, WHITE, true);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -165,7 +165,7 @@ void next_level_frame()
     if((_level - 3) % 10 == 0)
     {
         Vector2 pos = (Vector2){ 240, 10 };
-        drawTextEx(_fontJapanese, "skip 7 levels", pos, 30, 2, BLACK);
+        drawTextEx(_fontJapanese, "skip 7 levels", pos, 30, 2, WHITE, true);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -187,7 +187,7 @@ void next_level_frame()
         Vector2 pos = (Vector2){ 350, 10 };
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "completed level %i\npick your loot", _level);
-        drawTextEx(_fontJapanese, str, pos, 30, 2, BLACK);
+        drawTextEx(_fontJapanese, str, pos, 30, 2, WHITE, true);
     }
 
     draw_items_UI();

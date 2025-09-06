@@ -25,8 +25,10 @@ void drawCircle(int x, int y, float radius, Color color)
     DrawCircle(pos.x, pos.y, radius * game_to_window_scaling_f(), color);
 }
 
-void drawTextEx(Font font, const char * text, Vector2 position, float fontSize, float spacing, Color tint)
+void drawTextEx(Font font, const char * text, Vector2 position, float fontSize, float spacing, Color tint, bool shadow)
 {
+    if (shadow)
+        DrawTextEx(_fontJapanese, text, game_to_window_scaling(position.x+1.5, position.y+1.5), fontSize * game_to_window_scaling_f(), spacing * game_to_window_scaling_f(), BLACK);
     DrawTextEx(_fontJapanese, text, game_to_window_scaling(position.x, position.y), fontSize * game_to_window_scaling_f(), spacing * game_to_window_scaling_f(), tint);
 }
 

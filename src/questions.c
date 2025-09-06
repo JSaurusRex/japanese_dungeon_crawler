@@ -32,8 +32,10 @@ int _question_effectiveness = 0;
 
 bool _show_answer = false;
 
-typedef enum {ENGLISH, ROMAJI} QuestionType;
+typedef enum {ENGLISH, ROMAJI} AnswerType;
+typedef enum {KANJI, KANA} QuestionType;
 
+AnswerType _answerType;
 QuestionType _questionType;
 
 void (*_callback)() = 0;
@@ -139,7 +141,7 @@ void QuestionsFrame()
 
                 char * answer = _question.english;
 
-                if (_questionType == ROMAJI)
+                if (_answerType == ROMAJI)
                     answer = _question.romaji;
 
                 if (strncmp(answer, _input_str, STRING_LENGTH) == 0)
@@ -151,6 +153,11 @@ void QuestionsFrame()
                 }
                 else
                 {
+                    if(_printDebug)
+                    {
+                        for(int i = 0; i < _input_str_cursor && i < STRING_LENGTH; i++)
+                            printf("debug: %c %i vs %c %i\n", _input_str[i], _input_str[i], answer[i], answer[i]);
+                    }
                     FeedbackColor = RED;
                     _answers_incorrect++;
                     _combo = 0;                    
@@ -191,21 +198,21 @@ void QuestionsFrame()
         {
             char str[16];
             snprintf(str, 16, "%i/%i", _answer_counter, _answers_amount);
-            drawTextEx(_fontJapanese, str, (Vector2){ 50, 50 }, 30, 2, BLACK);
+            drawTextEx(_fontJapanese, str, (Vector2){ 50, 50 }, 30, 2, BLACK, false);
         }
 
         //combo
         {
             char str[16];
             snprintf(str, 16, "combo %i", _combo);
-            drawTextEx(_fontJapanese, str, (Vector2){ 600, 15 }, 50, 2, BLACK);
+            drawTextEx(_fontJapanese, str, (Vector2){ 600, 15 }, 50, 2, BLACK, false);
         }
 
         //effectiveness
         {
             char str[32];
             snprintf(str, 32, "level %i\nTotal %.1f", _question.level, (float)_question_effectiveness / (float)(_answers_amount));
-            drawTextEx(_fontJapanese, str, (Vector2){ 50, 400 }, 40, 2, BLACK);
+            drawTextEx(_fontJapanese, str, (Vector2){ 50, 400 }, 40, 2, BLACK, false);
         }
 
         //hearts
@@ -215,11 +222,14 @@ void QuestionsFrame()
         }
 
         //question
-        drawTextEx(_fontJapanese, _question.japanese, (Vector2){ 280, 100 }, 50, 2, BLACK);
+        if (_questionType == KANJI)
+            drawTextEx(_fontJapanese, _question.japanese, (Vector2){ 280, 100 }, 50, 2, BLACK, false);
+        else
+            drawTextEx(_fontJapanese, _question.kana, (Vector2){ 280, 100 }, 50, 2, BLACK, false);
 
         //input
-        drawRectangle(280, 195, 450, 60, ColorAlpha(YELLOW, 0.5));
-        drawTextEx(_fontJapanese, _input_str, (Vector2){ 300, 200 }, 45, 2, BLACK);
+        drawRectangle(280, 195, 450, 60, ColorAlpha(ColorAlpha(WHITE, 0.3), 0.5));
+        drawTextEx(_fontJapanese, _input_str, (Vector2){ 300, 200 }, 45, 2, BLACK, false);
 
         static float cursor_timer = 0;
         cursor_timer += GetFrameTime();
@@ -231,32 +241,31 @@ void QuestionsFrame()
         }
 
         //romaji or english
-
-        if (_questionType == ROMAJI)
-            drawTextEx(_fontJapanese, "ROMAJI", (Vector2){ 30, 200 }, 50, 2, BLACK);
+        if (_answerType == ROMAJI)
+            drawTextEx(_fontJapanese, "ROMAJI", (Vector2){ 30, 200 }, 50, 2, BLACK, false);
         else
-            drawTextEx(_fontJapanese, "ENGLISH", (Vector2){ 30, 200 }, 50, 2, BLACK);
+            drawTextEx(_fontJapanese, "ENGLISH", (Vector2){ 30, 200 }, 50, 2, BLACK, false);
         
         //draw answer
         if (_show_answer)
         {
-            if (_questionType == ROMAJI)
+            if (_answerType == ROMAJI)
             {
-                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 280, 150 }, 50, 2, BLACK);
-                drawTextEx(_fontJapanese, _question.english, (Vector2){ 280, 250 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 280, 150 }, 50, 2, BLACK, false);
+                drawTextEx(_fontJapanese, _question.english, (Vector2){ 280, 250 }, 50, 2, BLACK, false);
             }
             else
             {
-                drawTextEx(_fontJapanese, _question.english, (Vector2){ 280, 150 }, 50, 2, BLACK);
-                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 280, 250 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.english, (Vector2){ 280, 150 }, 50, 2, BLACK, false);
+                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 280, 250 }, 50, 2, BLACK, false);
             }
         }
 
         if (_answers_incorrect == 0)
-            drawTextEx(_fontJapanese, "Perfect!", (Vector2){ 320, 15 }, 50, 2, GOLD);
+            drawTextEx(_fontJapanese, "Perfect!", (Vector2){ 320, 15 }, 50, 2, GOLD, false);
 
         //render all answers
-        if (_questionType == ENGLISH && !_show_answer)
+        if (_answerType == ENGLISH && !_show_answer)
         {
             int shown = 0;
             for(int i = 0; i < _questions_count && shown < 11; i++)
@@ -269,7 +278,7 @@ void QuestionsFrame()
                         _input_str_cursor = strlen(_input_str) - 1;
                         break;
                     }
-                    drawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 280, 250 + shown * 40 }, 35, 2, BLACK);
+                    drawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 280, 250 + shown * 40 }, 35, 2, BLACK, false);
                     shown++;
                 }
             }
@@ -407,18 +416,36 @@ bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
     ProcessQuestionsFile(files.paths[randomIndex], question);
     question->level = level;
 
-    _questionType = rand() % (ROMAJI + 1);
+    _questionType = rand() % (KANA + 1);
+
+    if (question->japanese[0] == 0)
+    {
+        if(_printDebug)
+            printf("only japanese\n");
+        _questionType = KANJI;
+    }
+    
+    if (question->kana[0] == 0)
+    {
+        if(_printDebug)
+            printf("only kana\n");
+        _questionType = KANA;
+    }
+
+    _answerType = rand() % (ROMAJI + 1);
 
     if (question->english[0] == 0)
     {
-        printf("only romaji\n");
-        _questionType = ROMAJI;
+        if(_printDebug)
+            printf("only romaji\n");
+        _answerType = ROMAJI;
     }
     
     if (question->romaji[0] == 0)
     {
-        printf("only english\n");
-        _questionType = ENGLISH;
+        if(_printDebug)
+            printf("only english\n");
+        _answerType = ENGLISH;
     }
 
     if(_printDebug)
@@ -503,6 +530,21 @@ bool ProcessQuestionsFile(char * file, sQuestion * question)
                 }
                 
                 question->romaji[i] = 0;
+                break;
+            }
+
+            case 'h':
+            {
+                //copy string
+                int i = 0;
+                while(index < length && text[index] != '\n' && i < STRING_LENGTH-1)
+                {
+                    question->kana[i] = text[index];
+                    index++;
+                    i++;
+                }
+                
+                question->kana[i] = 0;
                 break;
             }
         }

@@ -26,7 +26,7 @@ void hub_frame()
     //enter button
     {
         Vector2 pos = (Vector2){ 640, 100};
-        drawTextEx(_fontJapanese, "enter", pos, 30, 2, BLACK);
+        drawTextEx(_fontJapanese, "enter", pos, 30, 2, BLACK, false);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -47,6 +47,6 @@ void hub_frame()
         Vector2 pos = (Vector2){ 280, 100};
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "highscore %i", _highscore);
-        drawTextEx(_fontJapanese, str, pos, 40, 2, BLACK);
+        drawTextEx(_fontJapanese, str, pos, 40, 2, BLACK, false);
     }
 }
