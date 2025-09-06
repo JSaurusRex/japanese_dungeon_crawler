@@ -81,6 +81,13 @@ void main() {
                 printf("debugging printing disabled\n");
         }
 
+        if(IsKeyPressed(KEY_F5))
+        {
+            reload_all_sprites();
+            if (_printDebug)
+                printf("debug: reloading all sprites\n");
+        }
+
         BeginDrawing();
         
         (*_screen)();

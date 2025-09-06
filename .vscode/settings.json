@@ -34,6 +34,9 @@
         "math.h": "c",
         "rendering.h": "c",
         "raylib.h": "c",
-        "next_level_screen.h": "c"
+        "next_level_screen.h": "c",
+        "upgrade_item.h": "c",
+        "energy_potion.h": "c",
+        "sprites.h": "c"
     }
 }

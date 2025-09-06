@@ -32,7 +32,7 @@ sItem _prefab_sword1 = {
 
 void sword1_render(sItem * self, Vector2 position)
 {
-    drawTexture(_sword1_sprite, position.x, position.y, WHITE);
+    drawTextureEx(_sword1_sprite, position, 0, 0.1, WHITE);
 }
 
 void sword1_effect_enemy_finish()

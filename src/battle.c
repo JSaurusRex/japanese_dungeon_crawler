@@ -36,8 +36,6 @@ sShield _shield_lanes [MAX_LANES] = {0};
 sShield _shield_inventory [MAX_SHIELDS] = {0};
 sShield _shield_hand = {0};
 
-Texture2D _battle_screen_texture;
-
 int _disabled_slot = -1;
 
 float _health = 10;
@@ -187,7 +185,6 @@ void take_damage(int lane, Element element, float damage)
 
 void Battle_Init()
 {
-    _battle_screen_texture = LoadTexture("data/screen/battle_screen.png");
     // _inventory[0] = _prefab_sword1;
     // _inventory[1] = _prefab_shield_repair_item;
     // _inventory[2] = _prefab_firewand1;

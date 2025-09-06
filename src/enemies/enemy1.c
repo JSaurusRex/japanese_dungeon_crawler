@@ -5,15 +5,20 @@
 
 #include <raylib.h>
 #include "../rendering.h"
+#include <raymath.h>
 #include <math.h>
 
 #include "../battle.h"
 #include "../particles.h"
 #include "../shadows.h"
+#include "../sprite_manager.h"
 
 #include "generic.h"
 
-void EnemyRender(sEnemy * self, int position)
+#define CHANGE_NAME(y) Enemy1 ## _ ## y
+
+
+void CHANGE_NAME (Render)(sEnemy * self, int position)
 {
     Vector2 pos = CalculateEnemyPosition(self->lane, position);
     add_shadow((Vector2){pos.x+23, pos.y+50}, 0.8, true);
@@ -32,29 +37,32 @@ void EnemyRender(sEnemy * self, int position)
     self->lastPosition = pos;
 }
 
-void EnemyTurn(sEnemy * self)
+void CHANGE_NAME (Turn)(sEnemy * self)
 {
     printf("doing enemy turn!\n");
 
     self->attack_animation_timer = 1;
 }
 
-void EnemyTakeDamage(sEnemy * self, float damage, Element element)
+void CHANGE_NAME (TakeDamage)(sEnemy * self, float damage, Element element)
 {
+    if (element == ELEMENT_FIRE)
+        damage *= 1.4;
+    
     if (_printDebug)
         printf("debug: EnemyTakeDamage: enemy took %.2f damage\n", damage);
 
-    apply_damage_enemy(self, element, damage, false);
+    apply_damage_enemy(self, element, damage, element == ELEMENT_FIRE);
 }
 
-char enemy1_description[] = "enemy1\n10 health\nDeals 20 dmg";
+char CHANGE_NAME(description)[] = "enemy1\n10 health\nDeals 20 dmg";
 
 sEnemy _prefab_enemy1 = {
     .active = true,
     .health = 10,
     .lane = 0,
-    .render = &EnemyRender,
-    .takeDamage = &EnemyTakeDamage,
-    .turn = &EnemyTurn, 
-    .description = enemy1_description
+    .render = &CHANGE_NAME (Render),
+    .takeDamage = &CHANGE_NAME (TakeDamage),
+    .turn = &CHANGE_NAME (Turn), 
+    .description = CHANGE_NAME(description)
 };

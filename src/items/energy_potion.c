@@ -29,7 +29,7 @@ sItem _prefab_energy_potion = {
 
 void Energy_potion_renderer(sItem * self, Vector2 position)
 {
-    drawTextureEx(_potion_liquid_sprite, position, 0, 0.1, RED);
+    drawTextureEx(_potion_liquid_sprite, position, 0, 0.1, GREEN);
     drawTextureEx(_potion_sprite, position, 0, 0.1, WHITE);
 }
 
