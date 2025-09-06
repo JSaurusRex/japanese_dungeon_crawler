@@ -7,6 +7,7 @@
 #include "../rendering.h"
 #include <math.h>
 
+#include "../sprite_manager.h"
 #include "../battle.h"
 #include "../main.h"
 
@@ -29,7 +30,7 @@ sItem _prefab_shield_repair_item = {
 
 void Item_repair_shield_renderer(sItem * self, Vector2 position)
 {
-    drawRectangle(position.x, position.y, 50, 50, GREEN);
+    drawTextureEx(_shield_repair_sprite, position, 0, 0.1, WHITE);
 }
 
 void Item_repair_shield_effect_shield(sItem * self, sShield * pShield)

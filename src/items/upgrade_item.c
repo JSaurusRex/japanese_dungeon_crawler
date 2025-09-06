@@ -7,6 +7,7 @@
 #include "../rendering.h"
 #include <math.h>
 
+#include "../sprite_manager.h"
 #include "../battle.h"
 #include "../questions.h"
 
@@ -29,7 +30,7 @@ sItem _prefab_upgrade_item = {
 
 void upgrade_item_renderer(sItem * self, Vector2 position)
 {
-    drawRectangle(position.x, position.y, 50, 50, GRAY);
+    drawTextureEx(_item_upgrade_sprite, position, 0, 0.1, WHITE);
 }
 
 void upgrade_item_effect_shield(sItem * self, sShield * pShield)
