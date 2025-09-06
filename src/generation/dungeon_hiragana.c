@@ -6,6 +6,7 @@
 
 #include "../enemies/enemy1.h"
 #include "../enemies/goblin1.h"
+#include "../enemies/ghost.h"
 #include "../items/attacks/sword1.h"
 #include "../items/shield_repair_item.h"
 #include "../items/item_enhancer.h"
@@ -45,6 +46,7 @@ void dungeon_hiragana_enemy_spawning()
             sEnemySpawn spawn_table[] = {
                 SPAWN_ENEMY(_prefab_enemy1, 0.2)
                 SPAWN_ENEMY(_prefab_goblin1, 0.2)
+                SPAWN_ENEMY(_prefab_ghost, 1)
             };
 
             spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 1 + rand() % 3);
