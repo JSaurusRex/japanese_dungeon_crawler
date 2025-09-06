@@ -43,9 +43,7 @@ void add_particle(Vector2 position, Vector2 velocity, float gravity, Particle_ty
 
     if (_particles[spot].used && _printDebug)
         printf("debug: add_particle: particle spot taken %i\n", spot);
-    
-    printf("adding particle!!\n");
-    
+        
     _particles[spot].used = true;
     _particles[spot].gravity = gravity;
     _particles[spot].type = type;
@@ -71,8 +69,6 @@ void remove_particle(int particle)
         return;
     }
 
-    printf("removing particles\n");
-
     _empty_particles[_empty_particles_index] = particle;
 
     _particles[particle].used = false;
@@ -80,13 +76,10 @@ void remove_particle(int particle)
 
 void emit_particles_explosion(Particle_type type, float lifetime, Vector2 position, Vector2 velocity, float gravity, float damping, int amount)
 {
-    printf("emitting particles!\n");
     for(int i = 0; i < amount; i++)
     {
         velocity.x = ((rand() % (int)fmax(velocity.x * 200, 1)) - velocity.x*100) / 100.0;
         velocity.y = ((rand() % (int)fmax(velocity.y * 200, 1)) - velocity.y*100) / 100.0;
-
-        printf("velocity %.2f, %.2f\n", velocity.x, velocity.y);
 
         add_particle(position, velocity, gravity, type, lifetime, damping);
     }
@@ -134,7 +127,7 @@ sDamageNumberParticle _damage_number_particles[MAX_DAMAGE_NUMBER_PARTICLES] = {0
 int _empty_damage_number_particles_index = -1;
 int _empty_damage_number_particles[MAX_PARTICLES] = {0};
 
-void add_damage_number_particle(Vector2 position, Element element, int amount)
+void add_damage_number_particle(Vector2 position, Element element, int amount, bool effective)
 {
     int spot = -1;
     if(_empty_damage_number_particles_index < 0)
@@ -160,8 +153,6 @@ void add_damage_number_particle(Vector2 position, Element element, int amount)
     if (_damage_number_particles[spot].used && _printDebug)
         printf("debug: add_particle: particle spot taken %i\n", spot);
     
-    printf("adding particle!!\n");
-
     Vector2 randomOffset = {rand() % 100 - 50, rand() % 100 - 50};
     
     _damage_number_particles[spot].used = true;
@@ -169,6 +160,7 @@ void add_damage_number_particle(Vector2 position, Element element, int amount)
     _damage_number_particles[spot].position = Vector2Add(position, randomOffset);
     _damage_number_particles[spot].element = element;
     _damage_number_particles[spot].lifetime = 2;
+    _damage_number_particles[spot].effective = effective;
 }
 
 void remove_damage_number_particle(int particle)
@@ -187,8 +179,6 @@ void remove_damage_number_particle(int particle)
         return;
     }
 
-    printf("removing particles\n");
-
     _empty_damage_number_particles[_empty_damage_number_particles_index] = particle;
 
     _damage_number_particles[particle].used = false;
@@ -206,7 +196,7 @@ void draw_damage_number_particles()
 
         if (_damage_number_particles[i].lifetime < 0)
             remove_damage_number_particle(i);
-        
+                
         Color color;
         switch(_damage_number_particles[i].element)
         {
@@ -244,9 +234,18 @@ void draw_damage_number_particles()
             }
         }
 
+        int fontSize = 15 + abs(_damage_number_particles[i].amount) / 4;
+
+        if (_damage_number_particles[i].effective)
+        {
+            if ((int)(_damage_number_particles[i].lifetime * 5) % 2 == 0)
+                color = WHITE;
+            fontSize += 3;
+        }
+
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "%i", _damage_number_particles[i].amount);
-        drawText(str, _damage_number_particles[i].position.x, _damage_number_particles[i].position.y, 17, color);
+        drawText(str, _damage_number_particles[i].position.x, _damage_number_particles[i].position.y, fontSize, color);
     }
 }
 

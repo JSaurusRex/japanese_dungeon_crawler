@@ -57,6 +57,7 @@ int _turn = -1;
 float _turn_breather = 0;
 
 char * _description;
+char * _hovered_item_pack;
 
 float _battle_timer = 0;
 
@@ -171,7 +172,7 @@ void take_damage(int lane, Element element, float damage)
     {
         _shake_timer = 1;
         emit_particles_explosion(PARTICLE_BLOOD, 2, _lastPosition, (Vector2){60, 40}, 80, 60, 6);
-        add_damage_number_particle(_lastPosition, element, -damage);
+        add_damage_number_particle(_lastPosition, element, -damage, false);
         _health -= damage;
     }
     
@@ -205,22 +206,16 @@ typedef struct
 
 void spawn_enemies(sEnemySpawn * enemySpawn_table, int size, int amount)
 {
-    printf("amount %i\n", amount);
-    printf("size %i\n", size);
     int total_chance = 0;
     for(int i = 0; i < size; i++)
     {
         total_chance += enemySpawn_table[i].chance * 100;
     }
 
-    printf("total_chance %i\n", total_chance);
-
     //choose amount random enemies
     for(int i = 0; i < amount; i++)
     {
         int number = rand() % total_chance;
-
-        printf("i %i\n", i);
 
         int chance = 0;
         for(int enemy = 0; enemy < size; enemy++)
@@ -235,11 +230,9 @@ void spawn_enemies(sEnemySpawn * enemySpawn_table, int size, int amount)
                 if (_enemies[spot].active)
                     continue;
                 
-                printf("spot %i\n", spot);
                 _enemies[spot] = *enemySpawn_table[enemy].pEnemy;
                 _enemies[spot].lane = rand() % MAX_LANES;
 
-                printf("active %i\n", _enemies[spot].active);
                 break;
             }
             break;
@@ -457,6 +450,7 @@ void draw_inventory()
         if (mouse_inside && _disabled_slot != item)
         {
             _description = _inventory[item].description;
+            _hovered_item_pack = _inventory[item].pack;
 
             bool interactable = _inventory[item].rounds_disabled <= 0 && _turn == -1 && IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
@@ -521,6 +515,7 @@ void draw_inventory()
         if (mouse_inside)
         {
             _description = _shield_inventory[shield].description;
+            _hovered_item_pack = _shield_inventory[shield].pack;
 
             if (!_item_hand.active && !_shield_hand.active && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1)
             {
@@ -549,6 +544,11 @@ void draw_items_UI()
         drawTextEx(_fontJapanese, _description, (Vector2){638, 385}, 19, 2, WHITE);
     }
 
+    if (_hovered_item_pack)
+    {
+        drawTextEx(_fontJapanese, _hovered_item_pack, (Vector2){638, 580}, 19, 2, WHITE);
+    }
+
     //draw dragged items
     if (_item_hand.active && _item_hand.render)
     {
@@ -574,10 +574,34 @@ void heal_player(float amount)
 {
     _health += amount;
 
-    add_damage_number_particle(_lastPosition, ELEMENT_NONE, amount);
+    add_damage_number_particle(_lastPosition, ELEMENT_NONE, amount, false);
 
     if (_health >= _max_health)
         _health = _max_health;
+}
+
+void get_enemies_nearby_enemy(int index, void (*callback)(sEnemy*, float))
+{
+    if (index < 0 || index >= MAX_ENEMIES)
+        return;
+    
+    Vector2 pos = _enemies[index].lastPosition;
+
+    for(int i = 0; i < MAX_ENEMIES; i++)
+    {
+        if (i == index)
+            continue;
+        
+        if (!_enemies[i].active)
+            continue;
+        
+        callback(&_enemies[i], Vector2Distance(_enemies->lastPosition, pos));
+    }
+}
+
+void get_enemies_nearby_current_enemy(void (*callback)(sEnemy*, float))
+{
+    get_enemies_nearby_enemy(_turn, callback);
 }
 
 void Battle_Frame()
@@ -614,6 +638,7 @@ void Battle_Frame()
             if (pos.y - 15 < getMouseY() && getMouseY() < pos.y + 15)
             {
                 _description = "player";
+                _hovered_item_pack = "";
 
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1)
                 {
@@ -649,6 +674,7 @@ void Battle_Frame()
                 if (pos.y - 50 < getMouseY() && getMouseY() < pos.y + 50)
                 {
                     _description = _enemies[enemy].description;
+                    _hovered_item_pack = "";
 
                     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1)
                     {
@@ -715,6 +741,7 @@ void Battle_Frame()
                     else if (_shield_lanes[lane].active)
                     {
                         _description = _shield_lanes[lane].description;
+                        _hovered_item_pack = _shield_lanes[lane].pack;
 
                         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !_shield_hand.active && !_item_hand.active && _turn == -1)
                         {

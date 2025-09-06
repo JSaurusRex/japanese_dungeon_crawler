@@ -44,7 +44,7 @@ void EnemyTakeDamage(sEnemy * self, float damage, Element element)
     if (_printDebug)
         printf("debug: EnemyTakeDamage: enemy took %.2f damage\n", damage);
 
-    apply_damage_enemy(self, element, damage);
+    apply_damage_enemy(self, element, damage, false);
 }
 
 char enemy1_description[] = "enemy1\n10 health\nDeals 20 dmg";

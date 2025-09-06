@@ -49,7 +49,7 @@ void Goblin1TakeDamage(sEnemy * self, float damage, Element element)
     if (_printDebug)
         printf("debug: EnemyTakeDamage: enemy took %.2f damage\n", damage);
 
-    apply_damage_enemy(self, element, damage);
+    apply_damage_enemy(self, element, damage, element == ELEMENT_FIRE);
 }
 
 char goblin1_description[] = "goblin1\n10 health\nDeals 20 dmg\nWeak to Fire";

@@ -22,7 +22,7 @@ sItem _prefab_shield_repair_item = {
     .effect_enemy = 0,
     .effect_shield = &Item_repair_shield_effect_shield, 
     .render = &Item_repair_shield_renderer,
-    .pack = "hiragana",
+    .pack = "hiragana1",
     .level = 1,
     .description = shield_repair_item_description
 };

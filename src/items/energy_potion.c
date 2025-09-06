@@ -21,7 +21,7 @@ sItem _prefab_energy_potion = {
     .effect_enemy = 0,
     .effect_player = &Energy_potion_effect_player,
     .render = &Energy_potion_renderer,
-    .pack = "hiragana",
+    .pack = "hiragana1",
     .level = 1,
     .description = Energy_potion_description
 };

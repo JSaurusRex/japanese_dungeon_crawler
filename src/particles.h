@@ -28,12 +28,13 @@ typedef struct
 {
     bool used;
     float lifetime;
+    bool effective;
     int amount;
     Element element;
     Vector2 position;
 } sDamageNumberParticle;
 
 #define MAX_DAMAGE_NUMBER_PARTICLES 100
-void add_damage_number_particle(Vector2 position, Element element, int amount);
+void add_damage_number_particle(Vector2 position, Element element, int amount, bool effective);
 
 #endif

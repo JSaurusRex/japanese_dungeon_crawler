@@ -77,6 +77,7 @@ struct sShield
     void (*render)(sShield *, Vector2);
     void (*take_damage)(sShield *, sEnemy*, Element, float);
     int level;
+    int level_cap;
 
     char * description;
     Vector2 lastPosition;
@@ -93,6 +94,9 @@ extern float _battle_timer;
 extern int _level;
 extern int _turn;
 extern int _highscore;
+extern int _energy;
+extern int _max_energy;
+extern char * _hovered_item_pack;
 
 
 void heal_player(float amount);

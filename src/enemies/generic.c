@@ -38,9 +38,9 @@ float shake_manager(float * pTimer)
     return sin(*pTimer * 40) * 10 * *pTimer;
 }
 
-void apply_damage_enemy(sEnemy * pEnemy, Element element, float damage)
+void apply_damage_enemy(sEnemy * pEnemy, Element element, float damage, bool effective)
 {
-    add_damage_number_particle(pEnemy->lastPosition, element, -damage);
+    add_damage_number_particle(pEnemy->lastPosition, element, -damage, effective);
     emit_particles_explosion(PARTICLE_BLOOD, 1.5, Vector2Add((Vector2){25, 25}, pEnemy->lastPosition), (Vector2){50, 50}, 90, 60, 8);
 
     pEnemy->health -= damage;

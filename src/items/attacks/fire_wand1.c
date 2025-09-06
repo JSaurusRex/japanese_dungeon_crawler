@@ -25,7 +25,7 @@ sItem _prefab_firewand1 = {
     .effect_shield = 0,
     .effect_item = 0,
     .render = &firewand1_render,
-    .pack = "hiragana",
+    .pack = "hiragana1",
     .level = 1,
     .description = firewand1_description
 };
@@ -54,6 +54,6 @@ void firewand1_effect_enemy(sItem * self, sEnemy * pEnemy)
     self->rounds_disabled = 2;
     consume_energy(self->energy);
 
-    Start_Questions(5, 3, "hiragana", 1, &firewand1_effect_enemy_finish);
+    Start_Questions(5, 3, self->pack, self->level, &firewand1_effect_enemy_finish);
 }
 

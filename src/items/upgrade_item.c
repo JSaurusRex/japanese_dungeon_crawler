@@ -22,7 +22,7 @@ sItem _prefab_upgrade_item = {
     .effect_shield = 0,
     .effect_item = &upgrade_item_effect,
     .render = &upgrade_item_renderer,
-    .pack = "hiragana",
+    .pack = "hiragana1",
     .level = 1,
     .description = upgrade_item_description
 };
@@ -48,6 +48,9 @@ void upgrade_item_effect_shield(sItem * self, sShield * pShield)
     }
 
     pShield->level++;
+    if (pShield->level > pShield->level_cap)
+        pShield->level = pShield->level_cap;
+
     self->active = false;
 }
 
@@ -66,7 +69,12 @@ void upgrade_item_effect(sItem * self, sItem * pItem)
         return;
     }
 
+    int max_level = GetMaxLevel(pItem->pack);
+    if (pItem->level >= max_level)
+        return;
+
     pItem->level++;
+
     self->active = false;
 }
 

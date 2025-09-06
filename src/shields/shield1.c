@@ -22,7 +22,7 @@ sShield _prefab_shield1 = {
     .max_health = 40,
     .render = &ShieldRender,
     .take_damage = &ShieldTakeDamage,
-    .pack = "hiragana",
+    .pack = "hiragana1",
     .level = 1,
     .description = shield1_description
 };
@@ -44,7 +44,7 @@ void ShieldRender(sShield * self, Vector2 position)
 
 void ShieldTakeDamage(sShield * self, sEnemy * pEnemy, Element element, float damage)
 {
-    add_damage_number_particle(self->lastPosition, element, -damage);
+    add_damage_number_particle(self->lastPosition, element, -damage, false);
     self->health -= damage;
     self->shake_timer = 1;
 }

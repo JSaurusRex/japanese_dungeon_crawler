@@ -22,7 +22,7 @@ sItem _prefab_item_enhancer = {
     .effect_shield = 0,
     .effect_item = &Item_enhancer_effect,
     .render = &Item_enhancer_renderer,
-    .pack = "hiragana",
+    .pack = "hiragana1",
     .level = 1,
     .description = item_enhancer_description
 };

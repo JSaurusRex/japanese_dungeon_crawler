@@ -21,7 +21,7 @@ sItem _prefab_healing_potion = {
     .effect_enemy = 0,
     .effect_player = &Healing_potion_effect_player,
     .render = &Healing_potion_renderer,
-    .pack = "hiragana",
+    .pack = "hiragana1",
     .level = 1,
     .description = healing_potion_description
 };

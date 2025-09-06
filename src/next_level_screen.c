@@ -12,6 +12,7 @@
 #include "sprite_manager.h"
 #include "battle.h"
 #include "inbetween_screen.h"
+#include "shadows.h"
 
 #include "items/attacks/sword1.h"
 #include "items/shield_repair_item.h"
@@ -30,7 +31,11 @@ sShield _loot_shields[LOOT_SHIELDS_MAX] = {0};
 
 void next_level_frame()
 {
+    _turn = -1;
+    _energy = _max_energy;
     drawTexture(_next_level_screen, 0, 0, WHITE);
+
+    render_shadows();
 
     draw_inventory();
 
@@ -71,6 +76,7 @@ void next_level_frame()
         if (mouse_inside)
         {
             _description = _loot[item].description;
+            _hovered_item_pack = _loot[item].pack;
 
             bool interactable = _loot[item].rounds_disabled <= 0&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
@@ -125,12 +131,6 @@ void next_level_frame()
             _shield_hand = _loot_shields[shield];
             _loot_shields[shield].active = false;
         }
-    }
-
-    //draw description
-    if (_description)
-    {
-        drawTextEx(_fontJapanese, _description, (Vector2){638, 385}, 19, 2, WHITE);
     }
 
     //next level button
@@ -271,19 +271,19 @@ void next_level_generate()
     {
         case 0:
         {
-            _loot[0] = _prefab_sword1;
-            _loot[1] = _prefab_healing_potion;
-            _loot[2] = _prefab_energy_potion;
+            // _loot[0] = _prefab_sword1;
+            // _loot[1] = _prefab_healing_potion;
+            // _loot[2] = _prefab_energy_potion;
             _loot_shields[0] = _prefab_shield1;
             sItemSpawn spawn_table[] = {
                 {&_prefab_sword1, 0, 0.2},
                 {&_prefab_firewand1, 0, 0.2},
                 {0, &_prefab_shield1, 0.5},
                 {&_prefab_shield_repair_item, 0, 0.5},
-                {&_prefab_upgrade_item, 0, 0.2}
+                {&_prefab_upgrade_item, 0, 0.9}
             };
 
-            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), rand() % 3);
+            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), 2 + rand() % 4);
             break;
         }
     }

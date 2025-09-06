@@ -195,8 +195,11 @@ void GameOver_item_result()
 
 void GameOver_Frame()
 {
+    _energy = _max_energy;
     _turn = -1;
     drawTexture(_gameover_screen, 0, 0, WHITE);
+
+    render_shadows();
 
     drawTextEx(_fontJapanese, "GameOver", (Vector2){ 240, 20 }, 70, 2, WHITE);
     drawTextEx(_fontJapanese, "You can keep a few items for next game", (Vector2){ 160, 100 }, 20, 2, WHITE);
@@ -238,6 +241,7 @@ void GameOver_Frame()
         if (mouse_inside)
         {
             _description = _exit_items[item].description;
+            _hovered_item_pack = _exit_items[item].pack;
 
             bool interactable = _exit_items[item].rounds_disabled <= 0&& IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
@@ -294,12 +298,6 @@ void GameOver_Frame()
         }
     }
 
-    //draw description
-    if (_description)
-    {
-        drawTextEx(_fontJapanese, _description, (Vector2){638, 385}, 19, 2, WHITE);
-    }
-
     //exit button
     {
         Vector2 pos = (Vector2){ 640, 100};
@@ -325,10 +323,10 @@ void GameOver_Frame()
 
     //exit button
     {
-        Vector2 pos = (Vector2){ 330, 400};
+        Vector2 pos = (Vector2){ 550, 150};
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "Level %i\nHighscore %i", _level, _highscore);
-        drawTextEx(_fontJapanese, str, pos, 50, 2, WHITE);
+        drawTextEx(_fontJapanese, str, pos, 40, 2, WHITE);
     }
 
 

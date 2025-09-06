@@ -25,7 +25,7 @@ sItem _prefab_sword1 = {
     .effect_shield = 0,
     .effect_item = 0,
     .render = &sword1_render,
-    .pack = "hiragana",
+    .pack = "hiragana1",
     .level = 1,
     .description = sword1_description
 };
@@ -53,6 +53,6 @@ void sword1_effect_enemy(sItem * self, sEnemy * pEnemy)
     self->rounds_disabled = 2;
     consume_energy(self->energy);
 
-    Start_Questions(5, 3, "hiragana", 1, &sword1_effect_enemy_finish);
+    Start_Questions(5, 3, self->pack, self->level, &sword1_effect_enemy_finish);
 }
 

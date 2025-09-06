@@ -28,6 +28,8 @@ char _pack [STRING_LENGTH] = {0};
 int _pack_level = 1;
 int _combo = 0;
 
+int _question_effectiveness = 0;
+
 bool _show_answer = false;
 
 typedef enum {ENGLISH, ROMAJI} QuestionType;
@@ -76,6 +78,7 @@ void Start_Questions(int amount, int hearts, char * pack, int level, void (*call
     _answers_incorrect = 0;
     _quiz_hearts = hearts;
     _show_answer = false;
+    _question_effectiveness = 0;
     strncpy(_pack, pack, STRING_LENGTH);
 
     _callback = callback;
@@ -144,6 +147,7 @@ void QuestionsFrame()
                     //correct
                     FeedbackColor = GREEN;
                     _combo++;
+                    _question_effectiveness += _question.level;
                 }
                 else
                 {
@@ -195,6 +199,13 @@ void QuestionsFrame()
             char str[16];
             snprintf(str, 16, "combo %i", _combo);
             drawTextEx(_fontJapanese, str, (Vector2){ 600, 15 }, 50, 2, BLACK);
+        }
+
+        //effectiveness
+        {
+            char str[32];
+            snprintf(str, 32, "level %i\nTotal %.1f", _question.level, (float)_question_effectiveness / (float)(_answers_amount));
+            drawTextEx(_fontJapanese, str, (Vector2){ 50, 400 }, 40, 2, BLACK);
         }
 
         //hearts
@@ -298,6 +309,40 @@ bool LoadAllQuestions()
     return true;
 }
 
+int GetMaxLevel(char * pack)
+{
+    if (!pack)
+    {
+        printf("error: GetMaxLevel: argument pack is null\n");
+        return 0;
+    }
+    
+    char path[STRING_LENGTH];
+    snprintf(path, STRING_LENGTH, "data/words/%s", pack);
+
+    if (!DirectoryExists(path))
+    {
+        printf("error: GetMaxLevel: Directory does not exist %s\n", path);
+        return 0;
+    }
+
+    char file[STRING_LENGTH];
+    snprintf(file, STRING_LENGTH, "data/words/%s/levels.txt", pack);
+    char * text = LoadFileText(file);
+    if (!text)
+    {
+        printf("error: GetMaxLevel: LoadFileText failed to load file %s\n", file);
+        return 0;
+    }
+    
+    int level = atoi(text);
+
+    if (_printDebug)
+        printf("debug: GetMaxLevel: level found is %i for pack %s\n", level, pack);
+
+    return level;
+}
+
 bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
 {
     if (!pack)
@@ -315,18 +360,14 @@ bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
         return false;
     }
 
-    char file[STRING_LENGTH];
-    snprintf(file, STRING_LENGTH, "data/words/%s/levels.txt", pack);
-    char * text = LoadFileText(file);
-    if (!text)
-    {
-        printf("error: LoadRandomQuestion: LoadFileText failed to load file %s\n", file);
-        return false;
-    }
-    int levels = atoi(text);
+    int max = GetMaxLevel(pack);
 
-    level = rand() % (int)fmax(fmin(levels, level)+1, 1);
-    printf("random level %i, max %i, levels.txt: %s\n", level, levels, text);
+    max = fmin(max, level);
+
+    level = fmin(1 + rand() % (int)fmax(max+2, 1), max);
+
+    printf("max level %i\n", (int)fmax(fmin(max, max), 1));
+    printf("chosen level %i\n", level);
 
     snprintf(path, STRING_LENGTH, "data/words/%s/%i", pack, level);
 
@@ -349,6 +390,7 @@ bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
     int randomIndex = rand() % files.count;
 
     ProcessQuestionsFile(files.paths[randomIndex], question);
+    question->level = level;
 
     _questionType = rand() % (ENGLISH + 1);
 
