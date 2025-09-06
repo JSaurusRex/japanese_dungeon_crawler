@@ -126,6 +126,13 @@ void next_level_frame()
         if (_loot_shields[shield].render)
             _loot_shields[shield].render(&_loot_shields[shield], pos);
         
+        //draw health numbers
+        {
+            char str[STRING_LENGTH];
+            snprintf(str, STRING_LENGTH, "hp:%.0f", _loot_shields[shield].health);
+            drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40}, 20, 2, WHITE);
+        }
+        
         if (interactable && mouse_inside && !_shield_hand.active)
         {
             _shield_hand = _loot_shields[shield];
@@ -280,7 +287,7 @@ void next_level_generate()
                 {&_prefab_firewand1, 0, 0.2},
                 {0, &_prefab_shield1, 0.5},
                 {&_prefab_shield_repair_item, 0, 0.5},
-                {&_prefab_upgrade_item, 0, 0.9}
+                {&_prefab_upgrade_item, 0, 0.2}
             };
 
             generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), 2 + rand() % 4);

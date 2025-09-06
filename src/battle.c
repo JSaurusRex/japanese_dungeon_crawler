@@ -63,7 +63,7 @@ float _battle_timer = 0;
 
 Vector2 CalculateEnemyPosition(int lane, int position)
 {
-    float walk_in_animation = Remap(powf(fmin(_battle_timer / 2.0 - lane - position * 1.2, 1), 0.3), 0, 1, 500, 0);
+    float walk_in_animation = Remap(powf(fmin(_battle_timer / 2.0 - lane * 0.3 - position * 0.5, 1), 0.3), 0, 1, 500, 0);
     return (Vector2){500 + walk_in_animation + position * 80 + lane * 10, 200 + lane * 50};
 }
 
@@ -669,12 +669,14 @@ void Battle_Frame()
         postition[_enemies[enemy].lane]++;
 
         {
-            if (pos.x - 50 < getMouseX() && getMouseX() < pos.x + 50)
+            if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
             {
-                if (pos.y - 50 < getMouseY() && getMouseY() < pos.y + 50)
+                if (pos.y < getMouseY() && getMouseY() < pos.y + 50)
                 {
                     _description = _enemies[enemy].description;
                     _hovered_item_pack = "";
+
+                        drawCircle(pos.x+25, pos.y+25, 30, ColorAlpha(WHITE, 0.2));
 
                     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && _turn == -1)
                     {

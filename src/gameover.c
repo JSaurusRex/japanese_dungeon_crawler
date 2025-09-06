@@ -291,6 +291,13 @@ void GameOver_Frame()
         if (_exit_shields[shield].render)
             _exit_shields[shield].render(&_exit_shields[shield], pos);
         
+        //draw health numbers
+        {
+            char str[STRING_LENGTH];
+            snprintf(str, STRING_LENGTH, "hp:%.0f", _exit_shields[shield].health);
+            drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40}, 20, 2, WHITE);
+        }
+        
         if (interactable && mouse_inside && !_shield_hand.active)
         {
             _shield_hand = _exit_shields[shield];

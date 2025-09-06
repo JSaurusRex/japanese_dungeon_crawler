@@ -73,72 +73,82 @@ void load_save()
         if(index >= length)
             break;
         
-        char c = text[index];
-        index += 2; //skip :
-
-        if (index >= length)
-            break;
-        
-        // if (_printDebug)
-        //     printf("debug: ProcessQuestionsFile: c = %c\n", c);
-        
-        switch(c)
+        if (text[index] != '\n')
         {
-            //item
-            case 'i':
-            {
-                if (item_index >= MAX_ITEMS)
-                    break;
-                
-                int item_id = atoi(&text[index]);
-
-                index += 3; // - 
-                if (index >= length)
-                    break;
-                int level = atoi(&text[index]);
-
-                //spawn item
-                _inventory[item_index] = *_load_array[item_id];
-                _inventory[item_index].level = level;
-                
-                if(_printDebug)
-                    printf("load_save: found item %i: %i lvl %i\n", item_index, item_id, level);
-                item_index++;
-                break;
-            }
             
-            //shield
-            case 's':
+            char c = text[index];
+            index += 2; //skip :
+
+            if (index >= length)
+                break;
+            
+            // if (_printDebug)
+            //     printf("debug: ProcessQuestionsFile: c = %c\n", c);
+            
+            switch(c)
             {
-                if (shield_index >= MAX_SHIELDS)
+                //item
+                case 'i':
+                {
+                    if (item_index >= MAX_ITEMS)
+                        break;
+                    
+                    int item_id = atoi(&text[index]);
+
+                    index += 3; // - 
+                    if (index >= length)
+                        break;
+                    int level = atoi(&text[index]);
+
+                    //spawn item
+                    _inventory[item_index] = *_load_array[item_id];
+                    _inventory[item_index].level = level;
+                    
+                    if(_printDebug)
+                        printf("load_save: found item %i: %i lvl %i\n", item_index, item_id, level);
+                    item_index++;
                     break;
+                }
                 
-                int shield_id = atoi(&text[index]);
+                //shield
+                case 's':
+                {
+                    if (shield_index >= MAX_SHIELDS)
+                        break;
+                    
+                    int shield_id = atoi(&text[index]);
 
-                index += 3; // - 
-                if (index >= length)
+                    index += 3; // - 
+                    if (index >= length)
+                        break;
+                    int level = atoi(&text[index]);
+
+                    //spawn shield
+                    _shield_inventory[shield_index] = *_load_array_shield[shield_id];
+                    _shield_inventory[shield_index].level = level;
+                    shield_index++;
+
+                    if(_printDebug)
+                        printf("load_save: found shield %i: %i lvl %i\n", shield_index, shield_id, level);
                     break;
-                int level = atoi(&text[index]);
+                }
 
-                //spawn shield
-                _shield_inventory[shield_index] = *_load_array_shield[shield_id];
-                _shield_inventory[shield_index].level = level;
-                shield_index++;
+                //highscore
+                case 'h':
+                {
+                    _highscore = atoi(&text[index]);
+                    if(_printDebug)
+                        printf("load_save: found highscore %i\n", _highscore);
+                    break;
+                }
 
-                if(_printDebug)
-                    printf("load_save: found shield %i: %i lvl %i\n", shield_index, shield_id, level);
-                break;
+                default:
+                {
+                    printf("found garbage line %c\n", c);
+                }
             }
-
-            //highscore
-            case 'h':
-            {
-                _highscore = atoi(&text[index]);
-                if(_printDebug)
-                    printf("load_save: found highscore %i\n", _highscore);
-                break;
-            }
-        }
+        }else
+            printf("skipping empty line\n");
 
         //goto next line
         while(index < length && text[index] != '\n')
