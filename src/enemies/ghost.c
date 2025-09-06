@@ -17,7 +17,8 @@
 void GhostRender(sEnemy * self, int position)
 {
     Vector2 pos = CalculateEnemyPosition(self->lane, position);
-    add_shadow((Vector2){pos.x+23, pos.y+50}, 0.8, true);
+    // add_shadow((Vector2){pos.x+23, pos.y+50}, 0.8, true);
+    //do ghosts have shadows?
 
     pos.x += shake_manager(&self->shake_timer);
 
@@ -29,7 +30,9 @@ void GhostRender(sEnemy * self, int position)
 
     pos.x -= move_forward_animation(self->attack_animation_timer, 80);
 
-    drawTexture(_ghost_sprite, pos.x, pos.y, WHITE);
+    pos.y += sin(_battle_timer * 0.6 + position + self->lane) * 10;
+
+    drawTextureEx(_ghost_sprite, pos, 0, 0.1, WHITE);
     self->lastPosition = pos;
 }
 
