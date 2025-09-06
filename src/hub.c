@@ -14,8 +14,13 @@
 #include "next_level_screen.h"
 #include "sprite_manager.h"
 
+#include "generation/dungeon_hiragana.h"
+
 void hub_frame()
 {
+    _dungeon_generate_loot = &dungeon_hiragana_loot_spawning;
+    _dungeon_enemy_generation = &dungeon_hiragana_enemy_spawning;
+
     drawTexture(_hub_screen, 0, 0, WHITE);
 
     //enter button

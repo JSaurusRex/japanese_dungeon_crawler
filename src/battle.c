@@ -61,6 +61,8 @@ char * _hovered_item_pack;
 
 float _battle_timer = 0;
 
+void (*_dungeon_enemy_generation)();
+
 Vector2 CalculateEnemyPosition(int lane, int position)
 {
     float walk_in_animation = Remap(powf(fmin(_battle_timer / 2.0 - lane * 0.3 - position * 0.5, 1), 0.3), 0, 1, 500, 0);
@@ -198,12 +200,6 @@ void Battle_Reset()
     _level = 0;
 }
 
-typedef struct
-{
-    sEnemy * pEnemy;
-    float chance;
-} sEnemySpawn;
-
 void spawn_enemies(sEnemySpawn * enemySpawn_table, int size, int amount)
 {
     int total_chance = 0;
@@ -246,33 +242,7 @@ void spawn_enemies_manager()
     for(int i = 0; i < MAX_ENEMIES; i++)
         _enemies[i].active = false;
     
-    int loottable_levels [0];
-    int level = 0;
-
-    int loottable_levels_amount = sizeof(loottable_levels)/sizeof(int);
-    for(int i = 1; i < loottable_levels_amount; i++)
-    {
-        if ( loottable_levels[i] > _level)
-        {
-            level = loottable_levels[i-1];
-            break;
-        }
-    }
-
-    //generate loot
-    switch(level)
-    {
-        case 0:
-        {
-            sEnemySpawn spawn_table[] = {
-                {&_prefab_enemy1, 0.2},
-                {&_prefab_goblin1, 0.2}
-            };
-
-            spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 1 + rand() % 3);
-            break;
-        }
-    }
+    _dungeon_enemy_generation();
 }
 
 void Battle_Start()

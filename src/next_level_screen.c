@@ -23,11 +23,12 @@
 #include "shields/shield1.h"
 #include "items/upgrade_item.h"
 
-#define LOOT_MAX 14
-#define LOOT_SHIELDS_MAX 7
+#include "next_level_screen.h"
 
 sItem _loot[LOOT_MAX] = {0};
 sShield _loot_shields[LOOT_SHIELDS_MAX] = {0};
+
+void (*_dungeon_generate_loot)();
 
 void next_level_frame()
 {
@@ -192,13 +193,6 @@ void next_level_frame()
     draw_items_UI();
 }
 
-typedef struct
-{
-    sItem * pItem;
-    sShield * pShield;
-    float chance;
-} sItemSpawn;
-
 void generate_loot(sItemSpawn * itemspawn_table, int size, int amount)
 {
     int total_chance = 0;
@@ -260,38 +254,5 @@ void next_level_generate()
     for(int i = 0; i < LOOT_SHIELDS_MAX; i++)
         _loot_shields[i].active = false;
     
-    int loottable_levels [0];
-    int level = 0;
-
-    int loottable_levels_amount = sizeof(loottable_levels)/sizeof(int);
-    for(int i = 1; i < loottable_levels_amount; i++)
-    {
-        if ( loottable_levels[i] > _level)
-        {
-            level = loottable_levels[i-1];
-            break;
-        }
-    }
-
-    //generate loot
-    switch(level)
-    {
-        case 0:
-        {
-            // _loot[0] = _prefab_sword1;
-            // _loot[1] = _prefab_healing_potion;
-            // _loot[2] = _prefab_energy_potion;
-            _loot_shields[0] = _prefab_shield1;
-            sItemSpawn spawn_table[] = {
-                {&_prefab_sword1, 0, 0.2},
-                {&_prefab_firewand1, 0, 0.2},
-                {0, &_prefab_shield1, 0.5},
-                {&_prefab_shield_repair_item, 0, 0.5},
-                {&_prefab_upgrade_item, 0, 0.2}
-            };
-
-            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), 2 + rand() % 4);
-            break;
-        }
-    }
+    _dungeon_generate_loot();
 }

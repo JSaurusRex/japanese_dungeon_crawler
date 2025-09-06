@@ -84,6 +84,12 @@ struct sShield
     char pack[STRING_LENGTH];
 };
 
+typedef struct
+{
+    sEnemy * pEnemy;
+    float chance;
+} sEnemySpawn;
+
 extern float _health;
 extern char * _description;
 extern sItem _item_hand;
@@ -97,11 +103,13 @@ extern int _highscore;
 extern int _energy;
 extern int _max_energy;
 extern char * _hovered_item_pack;
+extern void (*_dungeon_enemy_generation)();
 
 
 void heal_player(float amount);
 void take_damage(int lane, Element element, float damage);
 void draw_item(Vector2 pos, sItem * pItem);
 void Battle_Start();
+void spawn_enemies(sEnemySpawn * enemySpawn_table, int size, int amount);
 
 #endif
