@@ -12,8 +12,9 @@ extern Texture2D _hub_screen;
 extern Texture2D _disabled_slot_sprite;
 extern Texture2D _sword1_sprite;
 extern Texture2D _firewand1_sprite;
-extern Texture2D _goblin1_sprite;
 extern Texture2D _inbetween_screen;
+extern Texture2D _goblin1_sprite;
+extern Texture2D _ghost_sprite;
 
 void sprite_manager_init();
 

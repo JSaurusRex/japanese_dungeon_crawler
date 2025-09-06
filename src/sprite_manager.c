@@ -12,8 +12,9 @@ Texture2D _hub_screen;
 Texture2D _disabled_slot_sprite;
 Texture2D _sword1_sprite;
 Texture2D _firewand1_sprite;
-Texture2D _goblin1_sprite;
 Texture2D _inbetween_screen;
+Texture2D _goblin1_sprite;
+Texture2D _ghost_sprite;
 
 void sprite_manager_init()
 {
@@ -28,4 +29,5 @@ void sprite_manager_init()
     _firewand1_sprite = LoadTexture("data/sprites/attacks/firewand1.png");
     _inbetween_screen = LoadTexture("data/screen/inbetween.png");
     _goblin1_sprite = LoadTexture("data/sprites/enemies/goblin1.png");
+    _ghost_sprite = LoadTexture("data/sprites/enemies/ghost.png");
 }
