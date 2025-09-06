@@ -25,7 +25,7 @@ sItem _prefab_firewand1 = {
     .effect_shield = 0,
     .effect_item = 0,
     .render = &firewand1_render,
-    .pack = "hiragana1",
+    .pack = "words1",
     .level = 1,
     .description = firewand1_description
 };

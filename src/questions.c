@@ -215,11 +215,20 @@ void QuestionsFrame()
         }
 
         //question
-        drawTextEx(_fontJapanese, _question.japanese, (Vector2){ 400, 100 }, 50, 2, BLACK);
+        drawTextEx(_fontJapanese, _question.japanese, (Vector2){ 280, 100 }, 50, 2, BLACK);
 
         //input
-        drawRectangle(280, 195, 300, 60, ColorAlpha(YELLOW, 0.5));
-        drawTextEx(_fontJapanese, _input_str, (Vector2){ 300, 200 }, 50, 2, BLACK);
+        drawRectangle(280, 195, 450, 60, ColorAlpha(YELLOW, 0.5));
+        drawTextEx(_fontJapanese, _input_str, (Vector2){ 300, 200 }, 45, 2, BLACK);
+
+        static float cursor_timer = 0;
+        cursor_timer += GetFrameTime();
+
+        if ((int)(cursor_timer * 2) % 2 == 0)
+        {
+            Vector2 v = MeasureTextEx(_fontJapanese, _input_str, 45, 2);
+            drawRectangle(300 + v.x, 200, 5, 45, BLACK);
+        }
 
         //romaji or english
 
@@ -233,13 +242,13 @@ void QuestionsFrame()
         {
             if (_questionType == ROMAJI)
             {
-                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 400, 150 }, 50, 2, BLACK);
-                drawTextEx(_fontJapanese, _question.english, (Vector2){ 400, 250 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 280, 150 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.english, (Vector2){ 280, 250 }, 50, 2, BLACK);
             }
             else
             {
-                drawTextEx(_fontJapanese, _question.english, (Vector2){ 400, 150 }, 50, 2, BLACK);
-                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 400, 250 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.english, (Vector2){ 280, 150 }, 50, 2, BLACK);
+                drawTextEx(_fontJapanese, _question.romaji, (Vector2){ 280, 250 }, 50, 2, BLACK);
             }
         }
 
@@ -254,7 +263,13 @@ void QuestionsFrame()
             {
                 if(_input_str_cursor == -1 || strstr(_all_questions[i].english, _input_str))
                 {
-                    drawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 400, 250 + shown * 40 }, 35, 2, BLACK);
+                    if (IsKeyPressed(KEY_TAB))
+                    {
+                        strncpy(_input_str, _all_questions[i].english, STRING_LENGTH);
+                        _input_str_cursor = strlen(_input_str) - 1;
+                        break;
+                    }
+                    drawTextEx(_fontJapanese, _all_questions[i].english, (Vector2){ 280, 250 + shown * 40 }, 35, 2, BLACK);
                     shown++;
                 }
             }
@@ -392,13 +407,19 @@ bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
     ProcessQuestionsFile(files.paths[randomIndex], question);
     question->level = level;
 
-    _questionType = rand() % (ENGLISH + 1);
+    _questionType = rand() % (ROMAJI + 1);
 
     if (question->english[0] == 0)
+    {
+        printf("only romaji\n");
         _questionType = ROMAJI;
+    }
     
     if (question->romaji[0] == 0)
+    {
+        printf("only english\n");
         _questionType = ENGLISH;
+    }
 
     if(_printDebug)
     {
