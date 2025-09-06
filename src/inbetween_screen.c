@@ -18,14 +18,14 @@ void inbetween_screen_frame()
     {
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "Level %i", _level);
-        drawTextEx(_fontJapanese, str, (Vector2){ 300, 200 }, 70, 2, WHITE);
+        drawTextEx(_fontJapanese, str, (Vector2){ 300, 200 }, 70, 2, WHITE, false);
     }
 
     //draw level numbers
     {
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "Highscore %i", _highscore);
-        drawTextEx(_fontJapanese, str, (Vector2){ 300, 400 }, 40, 2, WHITE);
+        drawTextEx(_fontJapanese, str, (Vector2){ 300, 400 }, 40, 2, WHITE, false);
     }
 
     if (_inbetween_timer <= 2)

@@ -133,12 +133,12 @@ void GameOver_item_result_Frame()
     if (_answers_incorrect >= _quiz_hearts)
     {
         ClearBackground(RED);
-        drawTextEx(_fontJapanese, "You lost the item", (Vector2){ 240, 200 }, 70, 2, WHITE);
+        drawTextEx(_fontJapanese, "You lost the item", (Vector2){ 240, 200 }, 70, 2, WHITE, true);
     }
     else
     {
         ClearBackground(GREEN);
-        drawTextEx(_fontJapanese, "You kept the item!", (Vector2){ 240, 200 }, 70, 2, WHITE);
+        drawTextEx(_fontJapanese, "You kept the item!", (Vector2){ 240, 200 }, 70, 2, WHITE, true);
     }
 
     if(_gameover_kept_item)
@@ -154,7 +154,7 @@ void GameOver_item_result_Frame()
     //next button
     {
         Vector2 pos = (Vector2){ 640, 100};
-        drawTextEx(_fontJapanese, "next", pos, 30, 2, WHITE);
+        drawTextEx(_fontJapanese, "next", pos, 30, 2, WHITE, true);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -201,8 +201,8 @@ void GameOver_Frame()
 
     render_shadows();
 
-    drawTextEx(_fontJapanese, "GameOver", (Vector2){ 240, 20 }, 70, 2, WHITE);
-    drawTextEx(_fontJapanese, "You can keep a few items for next game", (Vector2){ 160, 100 }, 20, 2, WHITE);
+    drawTextEx(_fontJapanese, "GameOver", (Vector2){ 240, 20 }, 70, 2, WHITE, true);
+    drawTextEx(_fontJapanese, "You can keep a few items for next game", (Vector2){ 160, 100 }, 20, 2, WHITE, true);
 
     for(int item = 0; item < MAX_EXIT_ITEMS; item++)
     {
@@ -265,7 +265,7 @@ void GameOver_Frame()
     {
         Vector2 pos = (Vector2){450 + shield * 80, 200};
 
-        drawCircle(pos.x+25, pos.y+25, 10, YELLOW);
+        drawCircle(pos.x+25, pos.y+25, 10, ColorAlpha(WHITE, 0.3));
 
         bool mouse_inside = false;
         if (pos.x < getMouseX() && getMouseX() < pos.x + 50)
@@ -295,7 +295,7 @@ void GameOver_Frame()
         {
             char str[STRING_LENGTH];
             snprintf(str, STRING_LENGTH, "hp:%.0f", _exit_shields[shield].health);
-            drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40}, 20, 2, WHITE);
+            drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40}, 20, 2, WHITE, true);
         }
         
         if (interactable && mouse_inside && !_shield_hand.active)
@@ -308,7 +308,7 @@ void GameOver_Frame()
     //exit button
     {
         Vector2 pos = (Vector2){ 640, 100};
-        drawTextEx(_fontJapanese, "exit", pos, 30, 2, WHITE);
+        drawTextEx(_fontJapanese, "exit", pos, 30, 2, WHITE, true);
 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
@@ -333,7 +333,7 @@ void GameOver_Frame()
         Vector2 pos = (Vector2){ 550, 150};
         char str[STRING_LENGTH];
         snprintf(str, STRING_LENGTH, "Level %i\nHighscore %i", _level, _highscore);
-        drawTextEx(_fontJapanese, str, pos, 40, 2, WHITE);
+        drawTextEx(_fontJapanese, str, pos, 40, 2, WHITE, true);
     }
 
 

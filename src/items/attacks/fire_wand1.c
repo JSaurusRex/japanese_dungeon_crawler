@@ -25,14 +25,14 @@ sItem _prefab_firewand1 = {
     .effect_shield = 0,
     .effect_item = 0,
     .render = &firewand1_render,
-    .pack = "words1",
+    .pack = "animals",
     .level = 1,
     .description = firewand1_description
 };
 
 void firewand1_render(sItem * self, Vector2 position)
 {
-    drawTexture(_firewand1_sprite, position.x, position.y, WHITE);
+    drawTextureEx(_firewand1_sprite, position, 0, 0.1, WHITE);
 }
 
 void firewand1_effect_enemy_finish()

@@ -66,7 +66,7 @@ void dungeon_hiragana_loot_spawning()
     {
         case 0:
         {
-            // _loot[0] = _prefab_sword1;
+            _loot[0] = _prefab_sword1;
             // _loot[1] = _prefab_healing_potion;
             // _loot[2] = _prefab_energy_potion;
             _loot_shields[0] = _prefab_shield1;
