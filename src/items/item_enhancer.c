@@ -10,40 +10,42 @@
 #include "../battle.h"
 #include "../questions.h"
 
-void Item_enhancer_renderer(sItem * self, Vector2 position);
-void Item_enhancer_effect(sItem * self, sItem * pEnemy);
+#define CHANGE_NAME(y) item_enhancer ## _ ## y
 
-char item_enhancer_description [] = "Enhances item\nConsumes 10 energy\nEnhances 1.5 times\nOnly works if you\nanswered all\nquestions correctly!";
+void CHANGE_NAME(renderer)(sItem * self, Vector2 position);
+void CHANGE_NAME(effect)(sItem * self, sItem * pEnemy);
+
+char CHANGE_NAME(description) [] = "Enhances item\nConsumes 10 energy\nEnhances 1.5 times\nOnly works if you\nanswered all\nquestions correctly!";
 
 sItem _prefab_item_enhancer = {
     .active = true,
     .energy = 10,
     .effect_enemy = 0,
     .effect_shield = 0,
-    .effect_item = &Item_enhancer_effect,
-    .render = &Item_enhancer_renderer,
+    .effect_item = &CHANGE_NAME(effect),
+    .render = &CHANGE_NAME(renderer),
     .pack = "hiragana1",
     .level = 1,
-    .description = item_enhancer_description
+    .description = CHANGE_NAME(description)
 };
 
-void Item_enhancer_renderer(sItem * self, Vector2 position)
+void CHANGE_NAME(renderer)(sItem * self, Vector2 position)
 {
     drawRectangle(position.x, position.y, 50, 50, GRAY);
 }
 
-void Item_enhancer_effect(sItem * self, sItem * pItem)
+void CHANGE_NAME(effect)(sItem * self, sItem * pItem)
 {
     if (!pItem)
     {
-        printf("error: Item_enhancer_effect: pItem is null\n");
+        printf("error: effect: pItem is null\n");
         return;
     }
 
     if (!pItem->active)
     {
         if (_printDebug)
-            printf("debug: Item_enhancer_effect: clicked on inactive enemy\n");
+            printf("debug: effect: clicked on inactive enemy\n");
         return;
     }
 

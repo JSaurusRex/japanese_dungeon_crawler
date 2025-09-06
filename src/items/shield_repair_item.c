@@ -11,40 +11,42 @@
 #include "../battle.h"
 #include "../main.h"
 
-void Item_repair_shield_renderer(sItem * self, Vector2 position);
-void Item_repair_shield_effect_shield(sItem * self, sShield * pShield);
+#define CHANGE_NAME(y) shield_repair ## _ ## y
 
-char shield_repair_item_description [] = "Shield repair item\nConsumes 15 energy\nrepairs up to 50";
+void CHANGE_NAME(renderer)(sItem * self, Vector2 position);
+void CHANGE_NAME(effect_shield)(sItem * self, sShield * pShield);
+
+char CHANGE_NAME(description) [] = "Shield repair item\nConsumes 15 energy\nrepairs up to 50";
 
 sItem _prefab_shield_repair_item = {
     .active = true,
     .energy = 15,
     .effect_enemy = 0,
     .effect_enemy = 0,
-    .effect_shield = &Item_repair_shield_effect_shield, 
-    .render = &Item_repair_shield_renderer,
+    .effect_shield = &CHANGE_NAME(effect_shield), 
+    .render = &CHANGE_NAME(renderer),
     .pack = "hiragana1",
     .level = 1,
-    .description = shield_repair_item_description
+    .description = CHANGE_NAME(description)
 };
 
-void Item_repair_shield_renderer(sItem * self, Vector2 position)
+void CHANGE_NAME(renderer)(sItem * self, Vector2 position)
 {
     drawTextureEx(_shield_repair_sprite, position, 0, 0.1, WHITE);
 }
 
-void Item_repair_shield_effect_shield(sItem * self, sShield * pShield)
+void CHANGE_NAME(effect_shield)(sItem * self, sShield * pShield)
 {
     if (!pShield)
     {
-        printf("error: Item_repair_shield_effect_shield: pShield is null\n");
+        printf("error: effect_shield: pShield is null\n");
         return;
     }
 
     if (!pShield->active)
     {
         if (_printDebug)
-            printf("debug: Item_repair_shield_effect_shield: clicked on inactive shield\n");
+            printf("debug: effect_shield: clicked on inactive shield\n");
         return;
     }
 

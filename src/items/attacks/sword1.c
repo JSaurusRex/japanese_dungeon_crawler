@@ -13,29 +13,31 @@
 
 #include "generic.h"
 
-void sword1_render(sItem * self, Vector2 position);
-void sword1_effect_enemy(sItem * self, sEnemy * pEnemy);
+#define CHANGE_NAME(y) sword1 ## _ ## y
 
-char sword1_description [] = "Sword\nConsumes 35 energy\ndeals 5";
+void CHANGE_NAME(render)(sItem * self, Vector2 position);
+void CHANGE_NAME(effect_enemy)(sItem * self, sEnemy * pEnemy);
+
+char CHANGE_NAME(description) [] = "Sword\nConsumes 35 energy\ndeals 5";
 
 sItem _prefab_sword1 = {
     .active = true,
     .energy = 35,
-    .effect_enemy = &sword1_effect_enemy,
+    .effect_enemy = &CHANGE_NAME(effect_enemy),
     .effect_shield = 0,
     .effect_item = 0,
-    .render = &sword1_render,
+    .render = &CHANGE_NAME(render),
     .pack = "hiragana1",
     .level = 1,
-    .description = sword1_description
+    .description = CHANGE_NAME(description)
 };
 
-void sword1_render(sItem * self, Vector2 position)
+void CHANGE_NAME(render)(sItem * self, Vector2 position)
 {
     drawTextureEx(_sword1_sprite, position, 0, 0.1, WHITE);
 }
 
-void sword1_effect_enemy_finish()
+void CHANGE_NAME(effect_enemy_finish)()
 {
     if (quiz_succeeded())
         _pEnemy->takeDamage(_pEnemy, 5 * _pItem->level * damage_factor_calc(40, 30, 1.2), ELEMENT_NONE);
@@ -43,7 +45,7 @@ void sword1_effect_enemy_finish()
     try_return_item();
 }
 
-void sword1_effect_enemy(sItem * self, sEnemy * pEnemy)
+void CHANGE_NAME(effect_enemy)(sItem * self, sEnemy * pEnemy)
 {
     if (!enemy_sanity_checks(pEnemy))
         return;
@@ -53,6 +55,6 @@ void sword1_effect_enemy(sItem * self, sEnemy * pEnemy)
     self->rounds_disabled = 2;
     consume_energy(self->energy);
 
-    Start_Questions(5, 3, self->pack, self->level, &sword1_effect_enemy_finish);
+    Start_Questions(5, 3, self->pack, self->level, &CHANGE_NAME(effect_enemy_finish));
 }
 

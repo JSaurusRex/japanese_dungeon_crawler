@@ -11,40 +11,42 @@
 #include "../battle.h"
 #include "../questions.h"
 
-void upgrade_item_renderer(sItem * self, Vector2 position);
-void upgrade_item_effect(sItem * self, sItem * pEnemy);
+#define CHANGE_NAME(y) upgrade_item ## _ ## y
 
-char upgrade_item_description [] = "upgrade item\nupgrades 1 level\n";
+void CHANGE_NAME(renderer)(sItem * self, Vector2 position);
+void CHANGE_NAME(effect)(sItem * self, sItem * pEnemy);
+
+char CHANGE_NAME(description) [] = "upgrade item\nupgrades 1 level\n";
 
 sItem _prefab_upgrade_item = {
     .active = true,
     .energy = 10,
     .effect_enemy = 0,
     .effect_shield = 0,
-    .effect_item = &upgrade_item_effect,
-    .render = &upgrade_item_renderer,
+    .effect_item = &CHANGE_NAME(effect),
+    .render = &CHANGE_NAME(renderer),
     .pack = "hiragana1",
     .level = 1,
-    .description = upgrade_item_description
+    .description = CHANGE_NAME(description)
 };
 
-void upgrade_item_renderer(sItem * self, Vector2 position)
+void CHANGE_NAME(renderer)(sItem * self, Vector2 position)
 {
     drawTextureEx(_item_upgrade_sprite, position, 0, 0.1, WHITE);
 }
 
-void upgrade_item_effect_shield(sItem * self, sShield * pShield)
+void CHANGE_NAME(effect_shield)(sItem * self, sShield * pShield)
 {
     if (!pShield)
     {
-        printf("error: upgrade_item_effect: pShield is null\n");
+        printf("error: effect shield: pShield is null\n");
         return;
     }
 
     if (!pShield->active)
     {
         if (_printDebug)
-            printf("debug: upgrade_item_effect: clicked on inactive shield\n");
+            printf("debug: effect shield: clicked on inactive shield\n");
         return;
     }
 
@@ -55,18 +57,18 @@ void upgrade_item_effect_shield(sItem * self, sShield * pShield)
     self->active = false;
 }
 
-void upgrade_item_effect(sItem * self, sItem * pItem)
+void CHANGE_NAME(effect)(sItem * self, sItem * pItem)
 {
     if (!pItem)
     {
-        printf("error: upgrade_item_effect: pItem is null\n");
+        printf("error: effect: pItem is null\n");
         return;
     }
 
     if (!pItem->active)
     {
         if (_printDebug)
-            printf("debug: upgrade_item_effect: clicked on inactive item\n");
+            printf("debug: effect: clicked on inactive item\n");
         return;
     }
 

@@ -13,29 +13,31 @@
 
 #include "generic.h"
 
-void firewand1_render(sItem * self, Vector2 position);
-void firewand1_effect_enemy(sItem * self, sEnemy * pEnemy);
+#define CHANGE_NAME(y) firewand1 ## _ ## y
 
-char firewand1_description [] = "FireWand\nConsumes 35 energy\nDeals 5";
+void CHANGE_NAME(render)(sItem * self, Vector2 position);
+void CHANGE_NAME(effect_enemy)(sItem * self, sEnemy * pEnemy);
+
+char CHANGE_NAME(description) [] = "FireWand\nConsumes 35 energy\nDeals 5";
 
 sItem _prefab_firewand1 = {
     .active = true,
     .energy = 35,
-    .effect_enemy = &firewand1_effect_enemy,
+    .effect_enemy = &CHANGE_NAME(effect_enemy),
     .effect_shield = 0,
     .effect_item = 0,
-    .render = &firewand1_render,
+    .render = &CHANGE_NAME(render),
     .pack = "animals",
     .level = 1,
-    .description = firewand1_description
+    .description = CHANGE_NAME(description)
 };
 
-void firewand1_render(sItem * self, Vector2 position)
+void CHANGE_NAME(render)(sItem * self, Vector2 position)
 {
     drawTextureEx(_firewand1_sprite, position, 0, 0.1, WHITE);
 }
 
-void firewand1_effect_enemy_finish()
+void CHANGE_NAME(effect_enemy_finish)()
 {
     if (quiz_succeeded())
         _pEnemy->takeDamage(_pEnemy, 5 * _pItem->level * damage_factor_calc(40, 30, 1.2), ELEMENT_FIRE);
@@ -44,7 +46,7 @@ void firewand1_effect_enemy_finish()
     try_return_item();
 }
 
-void firewand1_effect_enemy(sItem * self, sEnemy * pEnemy)
+void CHANGE_NAME(effect_enemy)(sItem * self, sEnemy * pEnemy)
 {
     if (!enemy_sanity_checks(pEnemy))
         return;
@@ -54,6 +56,6 @@ void firewand1_effect_enemy(sItem * self, sEnemy * pEnemy)
     self->rounds_disabled = 2;
     consume_energy(self->energy);
 
-    Start_Questions(5, 3, self->pack, self->level, &firewand1_effect_enemy_finish);
+    Start_Questions(5, 3, self->pack, self->level, &CHANGE_NAME(effect_enemy_finish));
 }
 
