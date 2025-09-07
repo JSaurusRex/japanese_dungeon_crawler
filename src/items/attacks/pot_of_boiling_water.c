@@ -13,34 +13,45 @@
 
 #include "generic.h"
 
-#define CHANGE_NAME(y) firewand1 ## _ ## y
+#define CHANGE_NAME(y) pot_of_boiling_water ## _ ## y
 
 void CHANGE_NAME(render)(sItem * self, Vector2 position);
 void CHANGE_NAME(effect_enemy)(sItem * self, sEnemy * pEnemy);
 
-char CHANGE_NAME(description) [] = "FireWand\nConsumes 35 energy\nDeals 5";
+char CHANGE_NAME(description) [] = "pot of boiling water\nConsumes 35 energy\nDeals 5";
 
-sItem _prefab_firewand1 = {
+sItem _prefab_pot_of_boiling_water = {
     .active = true,
     .energy = 35,
     .effect_enemy = &CHANGE_NAME(effect_enemy),
     .effect_shield = 0,
     .effect_item = 0,
     .render = &CHANGE_NAME(render),
-    .pack = "hiragana2",
+    .pack = "hiragana3",
     .level = 1,
     .description = CHANGE_NAME(description)
 };
 
 void CHANGE_NAME(render)(sItem * self, Vector2 position)
 {
-    drawTextureEx(_firewand1_sprite, position, 0, 0.1, WHITE);
+    drawRectangle(position.x, position.y, 20, 20, LIGHTGRAY);
+    // drawTextureEx(_pot_of_boiling_water_sprite, position, 0, 0.1, WHITE);
 }
+
+void CHANGE_NAME(apply_effect_enemy_callback)(sEnemy * enemy, float distance)
+{
+    if (distance < 110)
+        enemy->takeDamage(enemy, 5 * damage_factor_calc(40, 30, 1.2), ELEMENT_FIRE);
+}
+
 
 void CHANGE_NAME(apply_effect_enemy)()
 {
     if (quiz_succeeded())
-        _pEnemy->takeDamage(_pEnemy, 5 * damage_factor_calc(40, 30, 1.2), ELEMENT_FIRE);
+    {
+        Vector2 pos = _pEnemy->lastPosition;
+        get_enemies_nearby_pos(pos, &CHANGE_NAME(apply_effect_enemy_callback));
+    }
 }
 
 void CHANGE_NAME(effect_enemy_finish)()

@@ -40,6 +40,7 @@
         "sprites.h": "c",
         "particles.h": "c",
         "memory_bank.h": "c",
-        "wooden_shield.h": "c"
+        "wooden_shield.h": "c",
+        "chest.h": "c"
     }
 }

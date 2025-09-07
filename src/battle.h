@@ -120,5 +120,7 @@ void draw_item(Vector2 pos, sItem * pItem);
 void Battle_Start();
 void spawn_enemies(sEnemySpawn * enemySpawn_table, int size, int amount);
 sEnemy * spawn_enemy(sEnemy * prefab);
+void get_enemies_nearby_pos(Vector2 pos, void (*callback)(sEnemy*, float));
+void get_enemies_nearby_current_enemy(void (*callback)(sEnemy*, float));
 
 #endif

@@ -560,28 +560,23 @@ void heal_player(float amount)
         _health = _max_health;
 }
 
-void get_enemies_nearby_enemy(int index, void (*callback)(sEnemy*, float))
-{
-    if (index < 0 || index >= MAX_ENEMIES)
-        return;
-    
-    Vector2 pos = _enemies[index].lastPosition;
-
+void get_enemies_nearby_pos(Vector2 pos, void (*callback)(sEnemy*, float))
+{   
     for(int i = 0; i < MAX_ENEMIES; i++)
-    {
-        if (i == index)
-            continue;
-        
+    {        
         if (!_enemies[i].active)
             continue;
         
-        callback(&_enemies[i], Vector2Distance(_enemies->lastPosition, pos));
+        callback(&_enemies[i], Vector2Distance(_enemies[i].lastPosition, pos));
     }
 }
 
 void get_enemies_nearby_current_enemy(void (*callback)(sEnemy*, float))
 {
-    get_enemies_nearby_enemy(_turn, callback);
+    if(_turn == -1)
+        return;
+    
+    get_enemies_nearby_pos(_enemies[_turn].lastPosition, callback);
 }
 
 void Battle_Frame()

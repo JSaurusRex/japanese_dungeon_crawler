@@ -14,6 +14,7 @@
 #include "../items/energy_potion.h"
 #include "../items/healing_potion.h"
 #include "../items/attacks/fire_wand1.h"
+#include "../items/attacks/pot_of_boiling_water.h"
 #include "../shields/shield1.h"
 #include "../shields/wooden_shield.h"
 #include "../shields/chest.h"
@@ -29,7 +30,7 @@
 
 void dungeon_hiragana_enemy_spawning()
 {
-    int loottable_levels [0];
+    int loottable_levels[] = {1, 2, 4, 6};
     int level = 0;
 
     int loottable_levels_amount = sizeof(loottable_levels)/sizeof(int);
@@ -45,7 +46,7 @@ void dungeon_hiragana_enemy_spawning()
     //generate loot
     switch(level)
     {
-        case 0:
+        case 1:
         {
             sEnemySpawn spawn_table[] = {
                 SPAWN_ENEMY(_prefab_ghost, 0.2)
@@ -55,7 +56,7 @@ void dungeon_hiragana_enemy_spawning()
             break;
         }
 
-        case 1:
+        case 2:
         {
             sEnemySpawn spawn_table[] = {
                 SPAWN_ENEMY(_prefab_goblin1, 0.4)
@@ -66,7 +67,7 @@ void dungeon_hiragana_enemy_spawning()
             break;
         }
 
-        case 3:
+        case 4:
         {
             sEnemySpawn spawn_table[] = {
                 SPAWN_ENEMY(_prefab_ghost, 0.2)
@@ -78,7 +79,7 @@ void dungeon_hiragana_enemy_spawning()
             break;
         }
 
-        case 5:
+        case 6:
         {
             sEnemySpawn spawn_table[] = {
                 SPAWN_ENEMY(_prefab_enemy1, 0.2)
@@ -95,7 +96,7 @@ void dungeon_hiragana_enemy_spawning()
 
 void dungeon_hiragana_loot_spawning()
 {
-    int loottable_levels [0];
+    int loottable_levels [] = {0, 1, 3};
     int level = 0;
 
     int loottable_levels_amount = sizeof(loottable_levels)/sizeof(int);
@@ -114,9 +115,26 @@ void dungeon_hiragana_loot_spawning()
         case 0:
         {
             _loot[0] = _prefab_sword1;
-            // _loot[1] = _prefab_healing_potion;
-            // _loot[2] = _prefab_energy_potion;
-            _loot_shields[0] = _prefab_shield1;
+            _loot[1] = _prefab_pot_of_boiling_water;
+            _loot_shields[0] = _prefab_wooden_shield;
+            sItemSpawn spawn_table[] = {
+                SPAWN_ITEM(_prefab_sword1, 0.2)
+                SPAWN_ITEM(_prefab_firewand1, 0.2)
+                SPAWN_SHIELD(_prefab_shield1, 0.2)
+                SPAWN_ITEM(_prefab_shield_repair_item, 0.5)
+                SPAWN_ITEM(_prefab_upgrade_item, 0.0)
+                SPAWN_ITEM(_prefab_healing_potion, 0.2)
+                SPAWN_ITEM(_prefab_energy_potion, 0.2)
+                SPAWN_SHIELD(_prefab_wooden_shield, 0.5)
+                SPAWN_SHIELD(_prefab_chest, 0.1)
+            };
+
+            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), rand() % 2);
+            break;
+        }
+
+        case 1:
+        {
             sItemSpawn spawn_table[] = {
                 SPAWN_ITEM(_prefab_sword1, 0.2)
                 SPAWN_ITEM(_prefab_firewand1, 0.2)
