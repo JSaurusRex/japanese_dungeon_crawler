@@ -27,7 +27,7 @@ typedef struct
     sEnemy * zombies[MAX_ZOMBIES];
 } CHANGE_NAME(struct);
 
-#include "../enemy_memory_bank.h"
+#include "../memory_bank.h"
 
 void CHANGE_NAME (Render)(sEnemy * self, int position)
 {
@@ -41,7 +41,7 @@ void CHANGE_NAME (Render)(sEnemy * self, int position)
         if (self->data_id != 0)
         {
             //get and cast data
-            CHANGE_NAME(struct) * data = get_enemy_data(self->data_id);
+            CHANGE_NAME(struct) * data = get_data_bank(self->data_id);
 
             if (data)
             {
@@ -82,13 +82,13 @@ void CHANGE_NAME (Turn)(sEnemy * self)
     //spawn logic
     if (self->data_id == 0)
     {
-        self->data_id = new_enemy_data(sizeof(CHANGE_NAME(struct)));
+        self->data_id = new_data_bank(sizeof(CHANGE_NAME(struct)));
 
         if (self->data_id != 0)
         {
 
             //get and cast data
-            CHANGE_NAME(struct) * data = (CHANGE_NAME(struct) * ) get_enemy_data(self->data_id);
+            CHANGE_NAME(struct) * data = (CHANGE_NAME(struct) * ) get_data_bank(self->data_id);
 
             //spawn zombies
             for(int i = 0; i < MAX_ZOMBIES; i++)

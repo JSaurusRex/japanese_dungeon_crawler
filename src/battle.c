@@ -16,6 +16,7 @@
 #include "next_level_screen.h"
 #include "gameover.h"
 #include "sprite_manager.h"
+#include "memory_bank.h"
 
 #include "enemies/enemy1.h"
 #include "enemies/goblin1.h"
@@ -585,6 +586,15 @@ void get_enemies_nearby_current_enemy(void (*callback)(sEnemy*, float))
 
 void Battle_Frame()
 {
+    data_bank_enemy(_enemies, MAX_ENEMIES);
+    data_bank_items(_inventory, MAX_ITEMS);
+    data_bank_shield(_shield_inventory, MAX_SHIELDS);
+    data_bank_shield(_shield_lanes, MAX_LANES);
+
+    data_bank_items(&_item_hand, 1);
+    data_bank_shield(&_shield_hand, 1);
+    data_bank_update();
+
     _battle_timer += GetFrameTime();
 
     if (_turn_breather > 0)

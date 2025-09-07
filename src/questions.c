@@ -312,10 +312,11 @@ void QuestionsFrame()
         static float cursor_timer = 0;
         cursor_timer += GetFrameTime();
 
-        if ((int)(cursor_timer * 2) % 2 == 0)
+        if ((int)(cursor_timer * 1.2) % 2 == 0)
         {
-            Vector2 v = MeasureTextEx(_fontJapanese, _input_str, 45, 2);
-            drawRectangle(300 + v.x * 0.8, 200, 5, 45, BLACK);
+            // Vector2 v = MeasureTextEx(_fontJapanese, _input_str, 45, 2);
+            // drawRectangle(300 + v.x * 0.8, 200, 5, 45, BLACK);
+            drawRectangle(300, 195 + 50, 400, 5, DARKGRAY);
         }
 
         //romaji or english

@@ -11,17 +11,17 @@
 #include "../particles.h"
 #include "../sprite_manager.h"
 
-#define CHANGE_NAME(x) shield1 ## _ ## x
+#define CHANGE_NAME(x) wooden_shield ## _ ## x
 
 void CHANGE_NAME(Render)(sShield * self, Vector2 position);
 void CHANGE_NAME(TakeDamage)(sShield * self, sEnemy * pEnemy, Element element, float damage);
 
-char CHANGE_NAME(description) [] = "Testing Shield\n40 health";
+char CHANGE_NAME(description) [] = "wooden shield\n20 health";
 
-sShield _prefab_shield1 = {
+sShield _prefab_wooden_shield = {
     .active = true,
-    .health = 40,
-    .max_health = 40,
+    .health = 20,
+    .max_health = 20,
     .render = &CHANGE_NAME(Render),
     .take_damage = &CHANGE_NAME(TakeDamage),
     .pack = "hiragana1",
@@ -40,13 +40,16 @@ void CHANGE_NAME(Render)(sShield * self, Vector2 position)
     if (self->shake_timer > 0)
         position.x += sin(self->shake_timer * 40) * 10 * self->shake_timer;
     // drawRectangle(position.x, position.y, 50, 50, DARKGRAY);
-    drawTextureEx(_sprite_shield1, position, 0, 0.1, WHITE);
+    drawTextureEx(_sprite_shield1, position, 0, 0.1, BROWN);
     self->lastPosition = position;
 }
 
 void CHANGE_NAME(TakeDamage)(sShield * self, sEnemy * pEnemy, Element element, float damage)
 {
-    add_damage_number_particle(self->lastPosition, element, -damage, false);
+    if (element == ELEMENT_FIRE)
+        damage *= 1.5;
+
+    add_damage_number_particle(self->lastPosition, element, -damage, element == ELEMENT_FIRE);
     self->health -= damage;
     self->shake_timer = 1;
 }

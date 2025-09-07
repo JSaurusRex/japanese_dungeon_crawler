@@ -93,13 +93,17 @@ void draw_particles()
         if (!_particles[i].used)
             continue;
         
-        _particles[i].velocity.y += _particles[i].gravity * delta;
-
         _particles[i].velocity = Vector2MoveTowards(_particles[i].velocity, (Vector2){0,0}, delta*_particles[i].damping);
+        _particles[i].velocity.y += _particles[i].gravity * delta;
 
         _particles[i].position = Vector2Add(_particles[i].position, Vector2Scale(_particles[i].velocity, delta));
 
         _particles[i].lifetime -= delta;
+
+        float size = 1;
+
+        if (_particles[i].lifetime < 1)
+            size = _particles[i].lifetime;
         
         if (_particles[i].lifetime < 0)
             remove_particle(i);
@@ -108,13 +112,13 @@ void draw_particles()
         {
             case PARTICLE_DUST:
             {
-                drawCircle(_particles[i].position.x, _particles[i].position.y, 5, ColorAlpha(GRAY, 0.4));
+                drawCircle(_particles[i].position.x, _particles[i].position.y, size * 5, ColorAlpha(GRAY, 0.4));
                 break;
             }
 
             case PARTICLE_BLOOD:
             {
-                drawCircle(_particles[i].position.x, _particles[i].position.y, 5, ColorAlpha(RED, 0.5));
+                drawCircle(_particles[i].position.x, _particles[i].position.y, size * 5, ColorAlpha(RED, 0.5));
                 break;
             }
         }

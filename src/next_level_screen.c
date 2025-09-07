@@ -133,6 +133,11 @@ void next_level_frame()
             snprintf(str, STRING_LENGTH, "hp:%.0f", _loot_shields[shield].health);
             drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40}, 20, 2, WHITE, true);
         }
+
+        if (mouse_inside)
+        {
+            _description = _loot_shields[shield].description;
+        }
         
         if (interactable && mouse_inside && !_shield_hand.active && !_item_hand.active)
         {

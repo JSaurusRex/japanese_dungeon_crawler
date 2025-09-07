@@ -15,6 +15,8 @@
 #include "../items/healing_potion.h"
 #include "../items/attacks/fire_wand1.h"
 #include "../shields/shield1.h"
+#include "../shields/wooden_shield.h"
+#include "../shields/chest.h"
 
 #include "../enemies/necromancer.h"
 
@@ -85,11 +87,13 @@ void dungeon_hiragana_loot_spawning()
             sItemSpawn spawn_table[] = {
                 SPAWN_ITEM(_prefab_sword1, 0.2)
                 SPAWN_ITEM(_prefab_firewand1, 0.2)
-                SPAWN_SHIELD(_prefab_shield1, 0.5)
+                SPAWN_SHIELD(_prefab_shield1, 0.2)
                 SPAWN_ITEM(_prefab_shield_repair_item, 0.5)
                 SPAWN_ITEM(_prefab_upgrade_item, 0.2)
                 SPAWN_ITEM(_prefab_healing_potion, 0.2)
                 SPAWN_ITEM(_prefab_energy_potion, 0.2)
+                SPAWN_SHIELD(_prefab_wooden_shield, 0.5)
+                SPAWN_SHIELD(_prefab_chest, 3)
             };
 
             generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), 2 + rand() % 4);

@@ -65,6 +65,8 @@ struct sItem
     int level;
     int level_cap;
 
+    int data_id;
+
     char * description;
     char pack[STRING_LENGTH];
 };
@@ -81,6 +83,8 @@ struct sShield
     void (*take_damage)(sShield *, sEnemy*, Element, float);
     int level;
     int level_cap;
+
+    int data_id;
 
     char * description;
     Vector2 lastPosition;
