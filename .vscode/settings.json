@@ -38,6 +38,8 @@
         "upgrade_item.h": "c",
         "energy_potion.h": "c",
         "sprites.h": "c",
-        "particles.h": "c"
+        "particles.h": "c",
+        "memory_bank.h": "c",
+        "wooden_shield.h": "c"
     }
 }
