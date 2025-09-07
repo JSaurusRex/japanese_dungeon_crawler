@@ -48,13 +48,46 @@ void dungeon_hiragana_enemy_spawning()
         case 0:
         {
             sEnemySpawn spawn_table[] = {
+                SPAWN_ENEMY(_prefab_ghost, 0.2)
+            };
+
+            spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 1 + rand() % 2);
+            break;
+        }
+
+        case 1:
+        {
+            sEnemySpawn spawn_table[] = {
+                SPAWN_ENEMY(_prefab_goblin1, 0.4)
+                SPAWN_ENEMY(_prefab_ghost, 0.1)
+            };
+
+            spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 1 + rand() % 3);
+            break;
+        }
+
+        case 3:
+        {
+            sEnemySpawn spawn_table[] = {
+                SPAWN_ENEMY(_prefab_ghost, 0.2)
+                SPAWN_ENEMY(_prefab_necromancer, 0.3)
+                SPAWN_ENEMY(_prefab_goblin1, 0.4)
+            };
+
+            spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 1 + rand() % 3);
+            break;
+        }
+
+        case 5:
+        {
+            sEnemySpawn spawn_table[] = {
                 SPAWN_ENEMY(_prefab_enemy1, 0.2)
                 SPAWN_ENEMY(_prefab_goblin1, 0.2)
                 SPAWN_ENEMY(_prefab_ghost, 0.2)
                 SPAWN_ENEMY(_prefab_necromancer, 0.3)
             };
 
-            spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 1 + rand() % 3);
+            spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 2 + rand() % 3);
             break;
         }
     }
@@ -93,10 +126,32 @@ void dungeon_hiragana_loot_spawning()
                 SPAWN_ITEM(_prefab_healing_potion, 0.2)
                 SPAWN_ITEM(_prefab_energy_potion, 0.2)
                 SPAWN_SHIELD(_prefab_wooden_shield, 0.5)
-                SPAWN_SHIELD(_prefab_chest, 3)
+                SPAWN_SHIELD(_prefab_chest, 0.1)
             };
 
-            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), 2 + rand() % 4);
+            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), 1 + rand() % 2);
+            break;
+        }
+
+        case 3:
+        {
+            _loot[0] = _prefab_sword1;
+            // _loot[1] = _prefab_healing_potion;
+            // _loot[2] = _prefab_energy_potion;
+            _loot_shields[0] = _prefab_shield1;
+            sItemSpawn spawn_table[] = {
+                SPAWN_ITEM(_prefab_sword1, 0.2)
+                SPAWN_ITEM(_prefab_firewand1, 0.2)
+                SPAWN_SHIELD(_prefab_shield1, 0.2)
+                SPAWN_ITEM(_prefab_shield_repair_item, 0.5)
+                SPAWN_ITEM(_prefab_upgrade_item, 0.2)
+                SPAWN_ITEM(_prefab_healing_potion, 0.2)
+                SPAWN_ITEM(_prefab_energy_potion, 0.2)
+                SPAWN_SHIELD(_prefab_wooden_shield, 0.5)
+                SPAWN_SHIELD(_prefab_chest, 0.1)
+            };
+
+            generate_loot(spawn_table, sizeof(spawn_table)/sizeof(sItemSpawn), 2 + rand() % 3);
             break;
         }
     }
