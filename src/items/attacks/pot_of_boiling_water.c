@@ -34,14 +34,13 @@ sItem _prefab_pot_of_boiling_water = {
 
 void CHANGE_NAME(render)(sItem * self, Vector2 position)
 {
-    drawRectangle(position.x, position.y, 20, 20, LIGHTGRAY);
-    // drawTextureEx(_pot_of_boiling_water_sprite, position, 0, 0.1, WHITE);
+    drawTextureEx(_pot_of_boiling_water_sprite, position, 0, 0.1, WHITE);
 }
 
 void CHANGE_NAME(apply_effect_enemy_callback)(sEnemy * enemy, float distance)
 {
     if (distance < 110)
-        enemy->takeDamage(enemy, 5 * damage_factor_calc(40, 30, 1.2), ELEMENT_FIRE);
+        enemy->takeDamage(enemy, 5 * damage_factor_calc(40, 30, 1.2), ELEMENT_WATER);
 }
 
 

@@ -50,8 +50,7 @@ void CHANGE_NAME(Render)(sShield * self, Vector2 position)
 
     if (self->shake_timer > 0)
         position.x += sin(self->shake_timer * 40) * 10 * self->shake_timer;
-    // drawRectangle(position.x, position.y, 50, 50, DARKGRAY);
-    drawTextureEx(_sprite_shield1, position, 0, 0.1, GRAY);
+    drawTextureEx(_chest_shield_sprite, position, 0, 0.1, GRAY);
     
     if (self->data_id)
     {

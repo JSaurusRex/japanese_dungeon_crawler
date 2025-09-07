@@ -469,7 +469,7 @@ bool LoadRandomQuestion(char * pack, sQuestion * question, int level)
 
     level = fmin(1 + rand() % (int)fmax(max+2, 1), max);
 
-    printf("max level %i\n", (int)fmax(fmin(max, max), 1));
+    printf("max level %i\n", (int)fmax(fmin(max, level), 1));
     printf("chosen level %i\n", level);
 
     snprintf(path, STRING_LENGTH, "data/words/%s/%i", pack, level);
