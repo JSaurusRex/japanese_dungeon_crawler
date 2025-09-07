@@ -27,6 +27,7 @@ sItem _prefab_shield_repair_item = {
     .render = &CHANGE_NAME(renderer),
     .pack = "hiragana1",
     .level = 1,
+    .level_cap = 1,
     .description = CHANGE_NAME(description)
 };
 

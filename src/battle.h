@@ -63,6 +63,7 @@ struct sItem
     float enhanced;
     int rounds_disabled;
     int level;
+    int level_cap;
 
     char * description;
     char pack[STRING_LENGTH];

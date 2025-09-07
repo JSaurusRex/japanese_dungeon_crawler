@@ -134,7 +134,7 @@ void next_level_frame()
             drawTextEx(_fontJapanese, str, (Vector2){ pos.x, pos.y + 40}, 20, 2, WHITE, true);
         }
         
-        if (interactable && mouse_inside && !_shield_hand.active)
+        if (interactable && mouse_inside && !_shield_hand.active && !_item_hand.active)
         {
             _shield_hand = _loot_shields[shield];
             _loot_shields[shield].active = false;
