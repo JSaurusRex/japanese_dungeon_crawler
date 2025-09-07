@@ -23,7 +23,7 @@ void draw_items_UI();
 
 typedef enum {TYPE_ENEMY, TYPE_ITEM, TYPE_AMOUNT} Type;
 
-typedef enum {ELEMENT_NONE, ELEMENT_WIND, ELEMENT_WATER, ELEMENT_FIRE, ELEMENT_EARTH} Element;
+typedef enum {ELEMENT_NONE, ELEMENT_WIND, ELEMENT_WATER, ELEMENT_FIRE, ELEMENT_HOLY} Element;
 
 typedef struct sEnemy sEnemy;
 
@@ -39,6 +39,8 @@ struct sEnemy
     void (*render)(sEnemy *, int);
     void (*turn)(sEnemy *);
     void (*takeDamage)(sEnemy *, float, Element);
+
+    int data_id;
 
     char * description;
     Vector2 lastPosition;
@@ -104,6 +106,7 @@ extern int _energy;
 extern int _max_energy;
 extern char * _hovered_item_pack;
 extern void (*_dungeon_enemy_generation)();
+extern sEnemy _enemies[MAX_ENEMIES];
 
 
 void heal_player(float amount);
@@ -111,5 +114,6 @@ void take_damage(int lane, Element element, float damage);
 void draw_item(Vector2 pos, sItem * pItem);
 void Battle_Start();
 void spawn_enemies(sEnemySpawn * enemySpawn_table, int size, int amount);
+sEnemy * spawn_enemy(sEnemy * prefab);
 
 #endif

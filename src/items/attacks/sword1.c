@@ -37,12 +37,20 @@ void CHANGE_NAME(render)(sItem * self, Vector2 position)
     drawTextureEx(_sword1_sprite, position, 0, 0.1, WHITE);
 }
 
-void CHANGE_NAME(effect_enemy_finish)()
+void CHANGE_NAME(apply_effect_enemy)()
 {
     if (quiz_succeeded())
         _pEnemy->takeDamage(_pEnemy, 5 * damage_factor_calc(40, 30, 1.2), ELEMENT_NONE);
-    change_screen(&Battle_Frame);
+}
+
+void CHANGE_NAME(effect_enemy_finish)()
+{
+    change_screen(&Battle_Frame, true);
     try_return_item();
+
+    //slightly delay showing damage being applied
+    _delayed_callback = &CHANGE_NAME(apply_effect_enemy);
+    _delayed_callback_timer = 1;
 }
 
 void CHANGE_NAME(effect_enemy)(sItem * self, sEnemy * pEnemy)

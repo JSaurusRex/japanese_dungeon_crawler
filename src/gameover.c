@@ -45,7 +45,7 @@ void Start_GameOver()
     for(int i = 0; i < MAX_SHIELDS; i++)
         _shield_inventory[i].health = _shield_inventory[i].max_health;
     
-    change_screen(&GameOver_Frame);
+    change_screen(&GameOver_Frame, true);
 }
 
 bool current_exit_item_exist()
@@ -91,7 +91,7 @@ void Start_quiz_for_item()
         for(int i = 0; i < MAX_EXIT_SHIELDS; i++)
             _shield_inventory[i] = _exit_shields[i];
         
-        change_screen(&hub_frame);
+        change_screen(&hub_frame, true);
         return;    
     }
 
@@ -174,7 +174,7 @@ void GameOver_item_result_Frame()
 
 void GameOver_item_result()
 {
-    change_screen(&GameOver_item_result_Frame);
+    change_screen(&GameOver_item_result_Frame, true);
 
     if (_answers_incorrect >= _quiz_hearts)
     {

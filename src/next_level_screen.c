@@ -155,7 +155,7 @@ void next_level_frame()
                     printf("pressed next level!\n");
                     _level++;
                     _inbetween_timer = 0;
-                    change_screen(&inbetween_screen_frame);
+                    change_screen(&inbetween_screen_frame, true);
                 }
             }
         }
@@ -176,7 +176,7 @@ void next_level_frame()
                     printf("pressed skip 7 levels!\n");
                     _level += 7;
                     _inbetween_timer = 0;
-                    change_screen(&inbetween_screen_frame);
+                    change_screen(&inbetween_screen_frame, true);
                 }
             }
         }
@@ -245,7 +245,7 @@ void generate_loot(sItemSpawn * itemspawn_table, int size, int amount)
 
 void next_level_generate()
 {
-    change_screen(&next_level_frame);
+    change_screen(&next_level_frame, true);
 
     //empty existing loot
     for(int i = 0; i < LOOT_MAX; i++)

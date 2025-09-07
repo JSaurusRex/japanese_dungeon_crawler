@@ -74,7 +74,7 @@ void Start_Questions(int amount, int hearts, char * pack, int level, void (*call
     _combo = 0;
 
     _feedback_alpha = 0;
-    change_screen(&QuestionsFrame);
+    change_screen(&QuestionsFrame, true);
     _answers_amount = amount;
     _answer_counter = 0;
     _answers_incorrect = 0;
@@ -94,6 +94,65 @@ void Start_Questions(int amount, int hearts, char * pack, int level, void (*call
     {
         _input_str[_input_str_cursor] = 0;
         _input_str_cursor--;
+    }
+}
+
+void QuestionResultsFrame()
+{
+    //input
+    {
+        if (IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            (*_callback)();
+        }
+    }
+
+    //rendering
+    {
+        Color background_color = GREEN;
+        
+        if (_quiz_hearts <= _answers_incorrect)
+            background_color = RED;
+
+        ClearBackground(background_color);
+        
+        if (!_show_answer)
+        {
+            _feedback_alpha -= GetFrameTime();
+            if (_feedback_alpha < 0)
+                _feedback_alpha = 0;
+        }
+
+        //combo
+        {
+            char str[16];
+            snprintf(str, 16, "combo %i", _combo);
+            drawTextEx(_fontJapanese, str, (Vector2){ 600, 15 }, 50, 2, BLACK, false);
+        }
+
+        //effectiveness
+        {
+            char str[32];
+            snprintf(str, 32, "Total level %.1f", (float)_question_effectiveness / (float)(_answers_amount));
+            drawTextEx(_fontJapanese, str, (Vector2){ 50, 400 }, 40, 2, BLACK, false);
+        }
+
+        //hearts
+        for(int i = 0; i < _quiz_hearts-_answers_incorrect; i++)
+        {
+            drawRectangle(50 + i * 50, 90, 30, 30, RED);
+        }
+
+        if (_quiz_hearts <= _answers_incorrect)
+        {
+            drawTextEx(_fontJapanese, "FAILED", (Vector2){ 260, 100 }, 70, 2, WHITE, false);
+        }
+        else {
+            drawTextEx(_fontJapanese, "Success", (Vector2){ 260, 100 }, 70, 2, WHITE, false);
+        }
+
+        if (_answers_incorrect == 0)
+            drawTextEx(_fontJapanese, "Perfect!", (Vector2){ 320, 15 }, 50, 2, GOLD, false);
     }
 }
 
@@ -173,7 +232,7 @@ void QuestionsFrame()
 
                 if (_answer_counter >= _answers_amount || _answers_incorrect >= _quiz_hearts)
                 {
-                    (*_callback)();
+                    change_screen(&QuestionResultsFrame, false);
                     return;
                 }else
                 {

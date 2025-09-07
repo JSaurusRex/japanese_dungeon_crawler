@@ -45,11 +45,11 @@ void apply_damage_enemy(sEnemy * pEnemy, Element element, float damage, bool eff
 
     pEnemy->health -= damage;
 
+    if (pEnemy->health <= 0)
+        pEnemy->health = 0;
+
     if (damage > 0)
         pEnemy->shake_timer = 1;
-
-    if (pEnemy->health <= 0)
-        pEnemy->active = false;
 }
 
 float move_forward_animation(float timer, float amount)

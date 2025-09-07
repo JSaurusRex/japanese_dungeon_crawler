@@ -49,6 +49,9 @@ void GhostTakeDamage(sEnemy * self, float damage, Element element)
         printf("debug: GhostTakeDamage: ghost took %.2f damage\n", damage);
 
     apply_damage_enemy(self, element, damage, false);
+
+    if (self->health <= 0)
+        self->active = false;
 }
 
 char ghost_description[] = "Spooky ghost\n25 health\nDeals 5 dmg\nScares easily";

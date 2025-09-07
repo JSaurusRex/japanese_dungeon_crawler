@@ -32,7 +32,7 @@ void CHANGE_NAME (Render)(sEnemy * self, int position)
 
     pos.x -= move_forward_animation(self->attack_animation_timer, 80);
 
-    drawTexture(_goblin1_sprite, pos.x, pos.y, WHITE);
+    drawTextureEx(_goblin1_sprite, pos, 0, 0.1, WHITE);
     self->lastPosition = pos;
 }
 
@@ -52,6 +52,9 @@ void CHANGE_NAME (TakeDamage)(sEnemy * self, float damage, Element element)
         printf("debug: EnemyTakeDamage: enemy took %.2f damage\n", damage);
 
     apply_damage_enemy(self, element, damage, element == ELEMENT_FIRE);
+    
+    if (self->health <= 0)
+        self->active = false;
 }
 
 char CHANGE_NAME(description)[] = "goblin1\n10 health\nDeals 20 dmg\nWeak to Fire";

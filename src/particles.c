@@ -221,9 +221,9 @@ void draw_damage_number_particles()
                 break;
             }
 
-            case ELEMENT_EARTH:
+            case ELEMENT_HOLY:
             {
-                color = BROWN;
+                color = GOLD;
                 break;
             }
 

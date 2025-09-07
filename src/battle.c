@@ -99,7 +99,7 @@ void next_turn()
 
 void do_next_turn()
 {   
-    while(!_enemies[_turn].active && _turn < MAX_ENEMIES)
+    while((!_enemies[_turn].active || _enemies[_turn].health <= 0) && _turn < MAX_ENEMIES)
         _turn++;
     
     if (_turn >= MAX_ENEMIES)
@@ -121,6 +121,10 @@ void do_next_turn()
         {
             if (!_enemies[enemy].active)
                 continue;
+            
+            if(_enemies[enemy].health <= 0)
+                continue;
+            
             enemy_left = true;
             break;
         }
@@ -197,6 +201,21 @@ void Battle_Reset()
     _level = 0;
 }
 
+sEnemy * spawn_enemy(sEnemy * prefab)
+{
+    //find empty spot to put enemy in
+    for(int spot = 0; spot < MAX_ENEMIES; spot++)
+    {
+        if (_enemies[spot].active)
+            continue;
+        
+        _enemies[spot] = *prefab;
+        _enemies[spot].lane = rand() % MAX_LANES;
+
+        return &_enemies[spot];
+    }
+}
+
 void spawn_enemies(sEnemySpawn * enemySpawn_table, int size, int amount)
 {
     int total_chance = 0;
@@ -217,17 +236,7 @@ void spawn_enemies(sEnemySpawn * enemySpawn_table, int size, int amount)
             if (number > chance)
                 continue;
             
-            //find empty spot to put enemy in
-            for(int spot = 0; spot < MAX_ENEMIES; spot++)
-            {
-                if (_enemies[spot].active)
-                    continue;
-                
-                _enemies[spot] = *enemySpawn_table[enemy].pEnemy;
-                _enemies[spot].lane = rand() % MAX_LANES;
-
-                break;
-            }
+            spawn_enemy(enemySpawn_table[enemy].pEnemy);
             break;
         }
     }
@@ -245,7 +254,7 @@ void spawn_enemies_manager()
 void Battle_Start()
 {
     _battle_timer = 0;
-    change_screen(&Battle_Frame);
+    change_screen(&Battle_Frame, true);
     _turn_breather = 0;
     _shake_timer;
     // _enemies[0] = _prefab_enemy1;
@@ -631,7 +640,7 @@ void Battle_Frame()
         
         Vector2 pos = CalculateEnemyPosition(_enemies[enemy].lane, postition[_enemies[enemy].lane]);
 
-        if (_enemy_empowered == enemy)
+        if (_enemy_empowered == enemy && _enemies[enemy].health > 0)
             drawCircle(pos.x+25, pos.y+25, 30, ColorAlpha(SKYBLUE, 0.4));
 
         _enemies[enemy].render(&_enemies[enemy], postition[_enemies[enemy].lane]);

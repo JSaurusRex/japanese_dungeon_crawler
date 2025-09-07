@@ -27,13 +27,24 @@ void EmptyScreen();
 
 void (*_next_screen)() = &hub_frame;
 
-void change_screen(void (*next_screen)())
-{
-    _transition_timer = 1;
-    _next_screen = next_screen;
+void (*_delayed_callback)() = 0;
+float _delayed_callback_timer = 0;
 
+void change_screen(void (*next_screen)(), bool fade)
+{
     if (next_screen == &hub_frame)
         save_save();
+    
+    if (fade)
+    {
+        _transition_timer = 1;
+        _next_screen = next_screen;
+    }
+    else
+    {
+        _screen = next_screen;
+    }
+
 }
 
 void main() {
@@ -105,6 +116,14 @@ void main() {
 
             if (_transition_timer < 0)
                 _transition_timer = 0;
+        }
+
+        if (_delayed_callback_timer > 0)
+        {
+            _delayed_callback_timer -= GetFrameTime();
+
+            if (_delayed_callback_timer <= 0 && _delayed_callback)
+                (*_delayed_callback)();
         }
         
         drawRectangle(0, 0, 800, 600, ColorAlpha(BLACK, sin(_transition_timer*PI)));

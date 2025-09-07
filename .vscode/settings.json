@@ -37,6 +37,7 @@
         "next_level_screen.h": "c",
         "upgrade_item.h": "c",
         "energy_potion.h": "c",
-        "sprites.h": "c"
+        "sprites.h": "c",
+        "particles.h": "c"
     }
 }

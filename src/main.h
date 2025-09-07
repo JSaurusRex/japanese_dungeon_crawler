@@ -10,8 +10,9 @@ extern bool _printDebug;
 extern Font _fontJapanese;
 
 // extern void (*_screen)();
-void change_screen(void (*next_screen)());
+void change_screen(void (*next_screen)(), bool fade);
 
-
+extern void (*_delayed_callback)();
+extern float _delayed_callback_timer;
 
 #endif

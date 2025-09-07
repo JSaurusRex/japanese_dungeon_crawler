@@ -53,6 +53,9 @@ void CHANGE_NAME (TakeDamage)(sEnemy * self, float damage, Element element)
         printf("debug: EnemyTakeDamage: enemy took %.2f damage\n", damage);
 
     apply_damage_enemy(self, element, damage, element == ELEMENT_FIRE);
+
+    if (self->health <= 0)
+        self->active = false;
 }
 
 char CHANGE_NAME(description)[] = "enemy1\n10 health\nDeals 20 dmg";

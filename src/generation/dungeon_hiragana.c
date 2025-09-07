@@ -16,6 +16,8 @@
 #include "../items/attacks/fire_wand1.h"
 #include "../shields/shield1.h"
 
+#include "../enemies/necromancer.h"
+
 #include "../enemies/generic.h"
 
 #define SPAWN_SHIELD(prefab, chance) {0, &prefab, chance},
@@ -46,7 +48,8 @@ void dungeon_hiragana_enemy_spawning()
             sEnemySpawn spawn_table[] = {
                 SPAWN_ENEMY(_prefab_enemy1, 0.2)
                 SPAWN_ENEMY(_prefab_goblin1, 0.2)
-                SPAWN_ENEMY(_prefab_ghost, 1)
+                SPAWN_ENEMY(_prefab_ghost, 0.2)
+                SPAWN_ENEMY(_prefab_necromancer, 0.3)
             };
 
             spawn_enemies(spawn_table, sizeof(spawn_table)/sizeof(sEnemySpawn), 1 + rand() % 3);
