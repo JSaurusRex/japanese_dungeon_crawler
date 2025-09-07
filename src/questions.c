@@ -11,6 +11,8 @@
 #include "main.h"
 #include "questions.h"
 
+#include "sprite_manager.h"
+
 sQuestion _question;
 
 sQuestion * _all_questions = 0;
@@ -138,9 +140,15 @@ void QuestionResultsFrame()
         }
 
         //hearts
-        for(int i = 0; i < _quiz_hearts-_answers_incorrect; i++)
+        for(int i = 0; i < _quiz_hearts; i++)
         {
-            drawRectangle(50 + i * 50, 90, 30, 30, RED);
+            Color color = RED;
+
+            if (i >= _quiz_hearts - _answers_incorrect)
+                color = BLACK;
+            
+            drawTextureEx(_hearts_sprite, (Vector2){50 + i * 50, 90}, 0, 0.07, color);
+            // drawRectangle(50 + i * 50, 90, 30, 30, RED);
         }
 
         if (_quiz_hearts <= _answers_incorrect)
@@ -280,9 +288,15 @@ void QuestionsFrame()
         }
 
         //hearts
-        for(int i = 0; i < _quiz_hearts-_answers_incorrect; i++)
+        for(int i = 0; i < _quiz_hearts; i++)
         {
-            drawRectangle(50 + i * 50, 90, 30, 30, RED);
+            Color color = RED;
+
+            if (i >= _quiz_hearts - _answers_incorrect)
+                color = BLACK;
+            
+            drawTextureEx(_hearts_sprite, (Vector2){50 + i * 50, 90}, 0, 0.07, color);
+            // drawRectangle(50 + i * 50, 90, 30, 30, RED);
         }
 
         //question
